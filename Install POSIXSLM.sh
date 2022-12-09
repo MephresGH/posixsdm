@@ -9,13 +9,13 @@
 zshell()
 {
 chmod +x ./xinitrc
-chmod +x ./.posixlm
-chmod +x ./.waylandrc
+chmod +x ./.posixslm
+chmod +x ./waylandrc
 cp ./xinitrc ~/
-cp ./.posixlm ~/
-cp ./.waylandrc ~/
+cp ./.posixslm ~/
+cp ./waylandrc ~/
 find ~/.zprofile || printf "Can't find user ZShell profile, creating .zprofile...\n" && touch ~/.zprofile
-printf 'sh ~/.posixlm' >> ~/.zprofile
+printf 'sh ~/.posixslm' >> ~/.zprofile
 printf "The scripts have been installed.\n"
 printf "Please uninstall your current login manager and reboot your machine to run POSIXLM.\n"
 exit
@@ -26,13 +26,13 @@ exit
 posix()
 {
 chmod +x ./xinitrc
-chmod +x ./.posixlm
-chmod +x ./.waylandrc
+chmod +x ./.posixslm
+chmod +x ./waylandrc
 cp ./xinitrc ~/
-cp ./.posixlm ~/
-cp ./.waylandrc ~/
+cp ./.posixslm ~/
+cp ./waylandrc ~/
 find ~/.profile || printf "Can't find user UNIX Shell profile, creating .profile...\n" && touch ~/.profile
-printf 'sh ~/.posixlm' >> ~/.profile
+printf 'sh ~/.posixslm' >> ~/.profile
 printf "The scripts have been installed.\n"
 printf "Please uninstall your current login manager and reboot your machine to run POSIXLM.\n"
 exit

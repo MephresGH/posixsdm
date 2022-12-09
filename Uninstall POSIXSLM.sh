@@ -8,11 +8,11 @@
 
 uninstall()
 {
-find ~/.zprofile && sed 's/ sh ~/.posixlm,//' ~/.zprofile || printf "Can't find user ZShell profile, continuing cleanup...\n"
-find ~/.profile && sed 's/ sh ~/.posixlm,//' ~/.profile || printf "Can't find user UNIX Shell profile, continuing cleanup...\n"
+find ~/.zprofile && sed 's/ sh ~/.posixslm,//' ~/.zprofile || printf "Can't find user ZShell profile, continuing cleanup...\n"
+find ~/.profile && sed 's/ sh ~/.posixslm,//' ~/.profile || printf "Can't find user UNIX Shell profile, continuing cleanup...\n"
 find ~/xinitrc && rm ~/xinitrc || printf "Local xinitrc not found.\n"
-find ~/.posixlm && rm ~/.posixlm || printf "Local .posixlm not found.\n"
-find ~/.waylandrc && rm ~/.waylandrc || printf "Local .waylandrc not found.\n"
+find ~/.posixslm && rm ~/.posixslm || printf "Local .posixslm not found.\n"
+find ~/waylandrc && rm ~/.waylandrc || printf "Local waylandrc not found.\n"
 printf "The scripts have been removed.\n"
 exit
 }

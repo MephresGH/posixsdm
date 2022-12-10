@@ -4,7 +4,7 @@
 ### Licensed Under: GNU General Public License v3.0
 ### Published & Written By Mephres
 
-## ZShell-specific setup for POSIXLM
+## ZShell-specific setup for POSIXSLM
 
 zshell()
 {
@@ -21,7 +21,7 @@ printf "Please uninstall your current login manager and reboot your machine to r
 exit
 }
 
-## POSIX shell-specific setup for POSIXLM
+## POSIX shell-specific setup for POSIXSLM
 
 posix()
 {

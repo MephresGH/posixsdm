@@ -6,8 +6,6 @@
 
 ## POSIX script uninstaller & cleanup
 
-alias deltxt=sh ~/.posixslm
-
 uninstall()
 {
 find ~/xinitrc && rm ~/xinitrc || printf "Local xinitrc not found.\n"

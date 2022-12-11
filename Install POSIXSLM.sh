@@ -8,16 +8,17 @@
 
 zshell()
 {
+mkdir ~/.config/posixslm
 chmod +x ./xinitrc
-chmod +x ./.posixslm
+chmod +x ./posixslm.sh
 chmod +x ./waylandrc
-cp ./xinitrc ~/
-cp ./.posixslm ~/
-cp ./waylandrc ~/
+cp ./xinitrc ~/.config/posixslm
+cp ./posixslm.sh ~/.config/posixslm
+cp ./waylandrc ~/.config/posixslm
 find ~/.zprofile || printf "Can't find user ZShell profile, creating .zprofile...\n" && touch ~/.zprofile
-printf 'sh ~/.posixslm' >> ~/.zprofile
+printf 'sh ~/.config/posixslm/posixslm.sh' >> ~/.zprofile
 printf "The scripts have been installed.\n"
-printf "Please uninstall your current login manager and reboot your machine to run POSIXLM.\n"
+printf "Please uninstall your current login manager and reboot your machine to run POSIXSLM.\n"
 exit
 }
 
@@ -25,16 +26,17 @@ exit
 
 posix()
 {
+mkdir ~/.config/posixslm
 chmod +x ./xinitrc
-chmod +x ./.posixslm
+chmod +x ./posixslm.sh
 chmod +x ./waylandrc
-cp ./xinitrc ~/
-cp ./.posixslm ~/
-cp ./waylandrc ~/
+cp ./xinitrc ~/.config/posixslm
+cp ./posixslm.sh ~/.config/posixslm
+cp ./waylandrc ~/.config/posixslm
 find ~/.profile || printf "Can't find user UNIX Shell profile, creating .profile...\n" && touch ~/.profile
-printf 'sh ~/.posixslm' >> ~/.profile
+printf 'sh ~/.config/posixslm/posixslm.sh' >> ~/.profile
 printf "The scripts have been installed.\n"
-printf "Please uninstall your current login manager and reboot your machine to run POSIXLM.\n"
+printf "Please uninstall your current login manager and reboot your machine to run POSIXSLM.\n"
 exit
 }
 
@@ -54,7 +56,7 @@ done
 
 prompt()
 {
-printf "This is the install script for the POSIX Login Manager.\n"
+printf "This is the install script for the POSIX Shell Login Manager.\n"
 printf "Please read the NOTICE.txt file for more information before installation.\n"
 while true; do
 printf "Do you want to install this program? (Y/N) "

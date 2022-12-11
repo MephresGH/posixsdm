@@ -2,21 +2,21 @@
 
 case $WM in
 kde)
-		exec startplasma-x11
+		exec dbus-run-session startplasma-x11
 		;;
 gnome)
-		exec gnome-session
+		exec dbus-run-session gnome-session
 		;;
 i3wm)
-		exec i3
+		exec dbus-run-session i3
 		;;
 fluxbox)
-		exec fluxbox
+		exec dbus-run-session fluxbox
 		;;
 openbox)
-		exec openbox-session
+		exec dbus-run-session openbox-session
 		;;
 awesome)
-		exec awesome
+		exec dbus-run-session awesome
 		;;
 esac

@@ -10,7 +10,7 @@ All scripts were written and published by Mephres.\
 For licensing and copyright notices, please refer to the included LICENSE file.
 
 ### Installation
-To install the POSIX Shell Login Manager, either drag and drop the files ".waylandrc", ".posixslm" and ".xinitrc" into your home directory and add "sh ~/.posixslm" to your local shell dotprofile config, or install it via the included installation script.
+To install the POSIX Shell Login Manager, either drag and drop the files "waylandrc", "posixslm" and "xinitrc" into your home directory and add "sh ~/.config/posixslm" to your local shell dotprofile config, or install it via the included installation script.
 
 ### Deinstallation
-To uninstall the scripts is as easy as installing them; either remove them manually, or run the uninstall script. However, you need to manually remove the line "sh ~/.posixslm" from your local .profile shell config as of now, since I haven't figured out a way to do that in the uninstall script yet.
+To uninstall the scripts is as easy as installing them; either remove them manually, or run the uninstall script. However, you need to manually remove the line "sh ~/.config/posixslm" from your local .profile shell config as of now, since I haven't figured out a way to do that in the uninstall script yet.

@@ -8,10 +8,9 @@
 
 user=$(whoami)
 date=$(date)
-log=$(last | head -n 6)
-environment=$(readlink /proc/$$/exe)
-alias findsx="find /usr/bin/sx"
-alias startxfix="exec startx ~/.config/posixslm/xinitrc"
+logincheck=$(last | head -n 6)
+envtty=$(readlink /proc/$$/exe)
+alias sxfix="exec startx ~/.config/posixslm/xinitrc"
 alias startw="exec ~/.config/posixslm/waylandrc"
 
 ## Start a Wayland login prompt
@@ -22,18 +21,22 @@ while true; do
 	printf "What Wayland desktop environment do you want to enter? (K/G/S/X/N) "
 		read -r kgsxn
 		case $kgsxn in
-		[Kk]* ) printf "\nStarting KDE Plasma (Wayland)...\n" && WM=kde startw;;
-		[Gg]* ) printf "\nStarting GNOME (Wayland)...\n" && WM=gnome startw;;
-		[Ss]* ) printf "\nStarting Sway...\n" && WM=sway startw;;
-		[Xx]* ) printf "\nAborting, going to login menu...\n" && break;;
-		[Nn]* ) printf "\nExiting to TTY...\n" && exit;;
+		[Kk]* ) printf "\nStarting KDE Plasma (Wayland)...\n"
+		WM=kde startw;;
+		[Gg]* ) printf "\nStarting GNOME (Wayland)...\n"
+		WM=gnome startw;;
+		[Ss]* ) printf "\nStarting Sway...\n"
+		WM=sway startw;;
+		[Xx]* ) printf "\nAborting, going to login menu...\n"
+		break;;
+		[Nn]* ) printf "\nExiting to TTY...\n"
+		exit;;
 		* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done
 }
 
 ## Start an X.Org login prompt
-# If "sx" not found, run "startx" instead
 
 xorg()
 {
@@ -41,14 +44,22 @@ while true; do
 	printf "What X.Org desktop environment do you want to enter? (K/G/I/A/O/F/X/N) "
 		read -r kgiaofxn
 		case $kgiaofxn in
-		[Kk]* ) printf "\nStarting KDE Plasma...\n" && findsx && exec sx startplasma-x11 || WM=kde startxfix;;
-		[Gg]* ) printf "\nStarting GNOME...\n" && findsx && exec sx gnome-shell || WM=gnome startxfix;;
-		[Ii]* ) printf "\nStarting i3wm...\n" && findsx && exec sx i3 || WM=i3wm startxfix;;
-		[Aa]* ) printf "\nStarting awesomewm...\n" && findsx && exec sx awesome || WM=awesome startxfix;;
-		[Oo]* ) printf "\nStarting Openbox...\n" && findsx && exec sx openbox || WM=openbox startxfix;;
-		[Ff]* ) printf "\nStarting Fluxbox...\n" && findsx && exec sx fluxbox || WM=fluxbox startxfix;;
-		[Xx]* ) printf "\nAborting, going to login menu...\n" && break;;
-		[Nn]* ) printf "\nExiting to TTY...\n" && exit;;
+		[Kk]* ) printf "\nStarting KDE Plasma...\n"
+		WM=kde sxfix;;
+		[Gg]* ) printf "\nStarting GNOME...\n"
+		WM=gnome sxfix;;
+		[Ii]* ) printf "\nStarting i3wm...\n"
+		WM=i3wm sxfix;;
+		[Aa]* ) printf "\nStarting awesomewm...\n"
+		WM=awesome sxfix;;
+		[Oo]* ) printf "\nStarting Openbox...\n"
+		WM=openbox sxfix;;
+		[Ff]* ) printf "\nStarting Fluxbox...\n"
+		WM=fluxbox sxfix;;
+		[Xx]* ) printf "\nAborting, going to login menu...\n"
+		break;;
+		[Nn]* ) printf "\nExiting to TTY...\n"
+		exit;;
 		* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done
@@ -61,9 +72,9 @@ login()
 clear
 printf "\nPOSIX Shell Login Manager\n\n"
 printf "You have logged into the user %s \n\n" "$user"
-printf "Recent logins:\n%s\n\n" "$log"
+printf "Recent logins:\n%s\n\n" "$logincheck"
 printf "The time and date is %s \n\n" "$date"
-printf "The current shell in usage is %s \n\n" "$environment"
+printf "The current shell in usage is %s \n\n" "$envtty"
 printf "The following X11 desktop environments are installed:\n\n"
 ls -l /usr/share/xsessions/
 printf "\nThe following Wayland desktop environments are installed:\n\n"
@@ -74,11 +85,14 @@ while true; do
 printf "Do you want to run an X.Org or Wayland graphical server? (X/W/N) "
 read -r xwn
 	case $xwn in
-		[Xx]* ) printf "\nStarting X.Org prompt...\n\n" && xorg
+		[Xx]* ) printf "\nStarting X.Org prompt...\n\n"
+		xorg
 		;;
-		[Ww]* ) printf "Starting Wayland prompt...\n\n" && wayland
+		[Ww]* ) printf "Starting Wayland prompt...\n\n"
+		wayland
 		;;
-		[Nn]* ) printf "\nExiting to TTY...\n\n" && return && exit;;
+		[Nn]* ) printf "\nExiting to TTY...\n\n"
+		exit;;
 		* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done
@@ -93,17 +107,27 @@ while true; do
 printf "Do you want to continue? (Y/N) "
 read -r yn
 	case $yn in
-		[Yy]* ) printf "\nContinuing...\n" && login;;
-		[Nn]* ) printf "\nExiting...\n" && return && exit;;
+		[Yy]* ) printf "\nContinuing...\n"
+		login;;
+		[Nn]* ) printf "\nExiting...\n"
+		exit;;
 		* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done
 }
 
-## Check for TTY window; if not TTY1, warn user from starting WM/DE
+## Check for TTY window
+# If not TTY1, warn user from starting WM/DE
 
+ttycheck()
+{
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
   login
 else
   warning
 fi
+}
+
+## Start script
+
+ttycheck

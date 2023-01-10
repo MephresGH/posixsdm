@@ -16,7 +16,7 @@ cp ./xinitrc ~/.config/posixslm
 cp ./posixslm.sh ~/.config/posixslm
 cp ./waylandrc ~/.config/posixslm
 find ~/.zprofile || printf "Can't find user ZShell profile, creating .zprofile...\n" && touch ~/.zprofile
-printf 'sh ~/.config/posixslm/posixslm.sh' >> ~/.zprofile
+printf 'exec sh ~/.config/posixslm/posixslm.sh' >> ~/.zprofile
 printf "The scripts have been installed.\n"
 printf "Please uninstall your current login manager and reboot your machine to run POSIXSLM.\n"
 exit
@@ -34,7 +34,7 @@ cp ./xinitrc ~/.config/posixslm
 cp ./posixslm.sh ~/.config/posixslm
 cp ./waylandrc ~/.config/posixslm
 find ~/.profile || printf "Can't find user UNIX Shell profile, creating .profile...\n" && touch ~/.profile
-printf 'sh ~/.config/posixslm/posixslm.sh' >> ~/.profile
+printf 'exec sh ~/.config/posixslm/posixslm.sh' >> ~/.profile
 printf "The scripts have been installed.\n"
 printf "Please uninstall your current login manager and reboot your machine to run POSIXSLM.\n"
 exit

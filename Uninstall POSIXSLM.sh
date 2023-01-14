@@ -9,14 +9,16 @@
 uninstall()
 {
 printf "The following files will be removed:\n"
-find ~/.config/posixslm && rm -r ~/config/posixslm && printf "The scripts have been removed.\n"|| printf "No posixslm folder was found. Exiting..."
+find ~/.config/posixslm && rm -r ~/.config/posixslm && printf "The scripts have been removed.\n"|| printf "No posixslm folder was found. Exiting...\n"
 exit
 }
+
+## Warning prompt
 
 prompt()
 {
 printf "This is the uninstall script for the POSIX Shell Login Manager.\n"
-printf "Removal of this suite of scripts after installation can cause issues.\nIt is recommended that you create a backup or an alternative startup setup.\n"
+printf "Removal of this suite of scripts after installation can cause issues.\nIt is recommended that you create a backup or install an alternative login manager.\n"
 while true; do
 printf "Do you want to proceed? (Y/N) "
 read -r yn

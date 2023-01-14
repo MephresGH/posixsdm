@@ -10,6 +10,8 @@ uninstall()
 {
 printf "The following files will be removed:\n"
 find ~/.config/posixslm && rm -r ~/config/posixslm && printf "The scripts have been removed.\n"|| printf "No posixslm folder was found. Exiting..."
+printf "Removing POSIXLM from .profile.\n"
+sed -i 's+exec sh ~/.config/posixslm/posixslm.sh+### removed+g' ~/.profile
 exit
 }
 

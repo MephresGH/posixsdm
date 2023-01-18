@@ -2,7 +2,6 @@
 
 ### POSIX Shell Login Manager
 ### Licensed under GNU General Public License v3.0
-### Published & Written by Mephres
 
 ## Create static variables and aliases for simple repeating of code
 
@@ -17,9 +16,8 @@ alias startw="exec ~/.config/posixslm/waylandrc"
 
 ttyexit()
 {
-while true; do
 printf "Do you want to return to the TTY or login menu? (T/E/L) "
-read -r tel
+while read -r tel; do
 	case $tel in
 	[Tt]* ) printf "\nExiting to TTY shell...\n"
 	exec $SHELL;;
@@ -36,9 +34,8 @@ done
 
 wayland()
 {
-while true; do
 printf "What Wayland desktop environment do you want to enter? (K/G/S/X/N) "
-read -r kgsxn
+while read -r kgsxn; do
 	case $kgsxn in
 	[Kk]* ) printf "\nStarting KDE Plasma (Wayland)...\n"
 	WM=kde startw;;
@@ -59,9 +56,8 @@ done
 
 xorg()
 {
-while true; do
 printf "What X.Org desktop environment do you want to enter? (K/G/I/A/O/F/X/N) "
-read -r kgiaofxn
+while read -r kgiaofxn; do
 	case $kgiaofxn in
 	[Kk]* ) printf "\nStarting KDE Plasma...\n"
 	WM=kde sxfix;;
@@ -86,7 +82,7 @@ done
 
 ## Run a function that creates a TTY-based "display manager"
 
-login()
+posixslmlogin()
 {
 clear
 printf "\nPOSIX Shell Login Manager\n\n"
@@ -100,9 +96,8 @@ printf "\nThe following Wayland desktop environments are installed:\n\n"
 ls -l /usr/share/wayland-sessions/
 printf "\nNOTE: .desktop files from environments that cannot be found cannot be run.\n\n"
 
-while true; do
 printf "Do you want to run an X.Org or Wayland graphical server? (X/W/N) "
-read -r xwn
+while read -r xwn; do
 	case $xwn in
 	[Xx]* ) printf "\nStarting X.Org prompt...\n\n"
 	xorg
@@ -122,9 +117,8 @@ done
 warning()
 {
 printf "TTY1 was not detected.\nIt is not recommended to run a desktop environment outside of TTY1.\n"
-while true; do
 printf "Do you want to continue? (Y/N) "
-read -r yn
+while read -r yn; do
 	case $yn in
 	[Yy]* ) printf "\nContinuing...\n"
 	login;;
@@ -139,7 +133,7 @@ done
 # If not TTY1, warn user from starting WM/DE
 
 if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-  login
+  posixslmlogin
 else
   warning
 fi

@@ -3,10 +3,10 @@
 XDG_SESSION_TYPE=wayland
 
 case $WM in
-kde)
-	exec dbus-run-session startplasma-wayland;;
+plasma)
+	exec dbus-run-session /bin/startplasma-wayland;;
 gnome)
-	exec dbus-run-session gnome-shell --wayland;;
+	exec dbus-run-session /bin/gnome-shell --wayland;;
 sway)
-	exec dbus-run-session sway;;
+	exec dbus-run-session /bin/sway;;
 esac

@@ -1,16 +1,16 @@
 #!/bin/sh
 
 case $WM in
-kde)
-	exec dbus-run-session startplasma-x11;;
+plasma)
+	exec dbus-run-session /bin/startplasma-x11;;
 gnome)
-	exec dbus-run-session gnome-session;;
-i3wm)
-	exec dbus-run-session i3;;
+	exec dbus-run-session /bin/gnome-session;;
+i3)
+	exec dbus-run-session /bin/i3;;
 fluxbox)
-	exec dbus-run-session fluxbox;;
+	exec dbus-run-session /bin/fluxbox;;
 openbox)
-	exec dbus-run-session openbox-session;;
+	exec dbus-run-session /bin/openbox-session;;
 awesome)
-	exec dbus-run-session awesome;;
+	exec dbus-run-session /bin/awesome;;
 esac

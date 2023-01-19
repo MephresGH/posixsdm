@@ -50,8 +50,8 @@ read -r runwm
 	printf "\nIncorrect input detected, repeating prompt...\n"
 	else
 	printf "\nExecuting variable into waylandrc...\n"
-	grep -f "runwm=$WM" ~/.config/posixslm/waylandrc
-		if [ "$?" -eq 1 ]; then
+	grep "$runwm" ~/.config/posixslm/waylandrc
+		if [ "$?" -eq 0 ]; then
 		WM=$runwm startw
 		else
 		printf "\nError: invalid input or variable.\n"

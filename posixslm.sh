@@ -17,8 +17,9 @@ alias startw="exec ~/.config/posixslm/waylandrc"
 ttyexit()
 {
 while true; do
+printf "\nEntered exit prompt.\n"
 printf "Do you want to return to the TTY or login menu? (T/E/L) "
-read tel
+read -r tel
 	case $tel in
 	[Tt]* ) printf "\nExiting to TTY shell...\n"
 	exec $SHELL;;
@@ -36,20 +37,20 @@ done
 wayland()
 {
 while true; do
-printf "\nWhat Wayland desktop environment do you want to enter?\n"
+printf "\nEntered Wayland prompt.\n"
+printf "What Wayland desktop environment do you want to enter?\n"
 printf "The following options are available:\nView waylandrc, Exit, Execute WM (v/x/INPUT) "
-read runwm
-	if [ $runwm = "v" ]; then
+read -r runwm
+	if [ "$runwm" = "v" ]; then
 	printf "\nListing waylandrc content...\n\n"
 	cat ~/.config/posixslm/waylandrc
-	elif [ $runwm = "x" ]; then
-	printf "\nReturning to exit prompt...\n"
+	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then
 	printf "\nIncorrect input detected, repeating prompt...\n"
 	else
 	printf "\nExecuting variable into waylandrc...\n"
-	grep "runwm=$WM" ~/.config/posixslm/waylandrc > /dev/null
+	grep -f "runwm=$WM" ~/.config/posixslm/waylandrc
 		if [ "$?" -eq 1 ]; then
 		WM=$runwm startw
 		else
@@ -64,14 +65,14 @@ done
 xorg()
 {
 while true; do
+printf "\nEntered X.Org prompt.\n"
 printf "\nWhat X.Org desktop environment do you want to enter?\n"
 printf "The following options are available:\nView xinitrc, Exit, Execute WM (v/x/INPUT) "
-read runwm
-	if [ $runwm = "v" ]; then
+read -r runwm
+	if [ "$runwm" = "v" ]; then
 	printf "\nListing xinitrc content...\n"
 	cat ~/.config/posixslm/xinitrc
-	elif [ $runwm = "x" ]; then
-	printf "\nReturning to exit prompt...\n"
+	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then
 	printf "\nIncorrect input detected, repeating prompt...\n"
@@ -100,14 +101,11 @@ printf "\nNOTE: .desktop files from environments that cannot be found cannot be 
 
 while true; do
 printf "Do you want to run an X.Org or Wayland graphical server? (X/W/N) "
-read xwn
+read -r xwn
 	case $xwn in
-	[Xx]* ) printf "\nStarting X.Org prompt...\n"
-	xorg;;
-	[Ww]* ) printf "\nStarting Wayland prompt...\n"
-	wayland;;
-	[Nn]* ) printf "\nGoing to exit prompt...\n\n"
-	ttyexit;;
+	[Xx]* )	xorg;;
+	[Ww]* ) wayland;;
+	[Nn]* ) ttyexit;;
 	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done
@@ -120,12 +118,10 @@ warning()
 while true; do
 printf "TTY1 was not detected.\nIt is not recommended to run a desktop environment outside of TTY1.\n"
 printf "Do you want to continue? (Y/N) "
-read yn
+read -r yn
 	case $yn in
-	[Yy]* ) printf "\nContinuing...\n"
-	login;;
-	[Nn]* ) printf "\nExiting...\n"
-	ttyexit;;
+	[Yy]* ) slmlogin;;
+	[Nn]* ) ttyexit;;
 	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
 	esac
 done

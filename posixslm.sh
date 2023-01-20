@@ -42,8 +42,8 @@ printf "\nWhat Wayland desktop environment do you want to enter?"
 printf "\n\nThe following options are available:\nView waylandrc, Exit, Execute WM (v/x/INPUT) "
 read -r runwm
 	if [ "$runwm" = "v" ]; then
-	printf "\nListing waylandrc content...\n\n"
-	cat ~/.config/posixslm/waylandrc
+	printf "\nListing waylandrc case switches...\n\n"
+	grep -e "^.*)" ~/.config/posixslm/waylandrc
 	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then
@@ -69,8 +69,8 @@ printf "\nWhat X.Org desktop environment do you want to enter?\n"
 printf "The following options are available:\nView xinitrc, Exit, Execute WM (v/x/INPUT) "
 read -r runwm
 	if [ "$runwm" = "v" ]; then
-	printf "\nListing xinitrc content...\n"
-	cat ~/.config/posixslm/xinitrc
+	printf "\nListing xinitrc case switches...\n"
+	grep -e "^.*)" ~/.config/posixslm/xinitrc
 	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then

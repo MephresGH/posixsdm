@@ -32,7 +32,7 @@ chmod +x ./waylandrc
 cp ./xinitrc ~/.config/posixslm
 cp ./posixslm.sh ~/.config/posixslm
 cp ./waylandrc ~/.config/posixslm
-find ~/.profile || printf 'Cannot find user UNIX Shell profile, creating .profile...\n' && touch ~/.profile
+find ~/.profile || printf 'Cannot find user POSIX Shell profile, creating .profile...\n' && touch ~/.profile
 printf 'exec sh ~/.config/posixslm/posixslm.sh' >> ~/.profile
 printf 'The scripts have been installed.\n'
 printf 'Please uninstall your current login manager and reboot your machine to run POSIXSLM.\n'

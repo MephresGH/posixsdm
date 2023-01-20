@@ -1,16 +1,56 @@
 #!/bin/sh
 
+dir=/usr/share/xsessions
+slm=~/.config/posixslm/posixslm.sh
+
 case $WM in
 plasma)
-	exec dbus-run-session /bin/startplasma-x11;;
+	if grep -Rwq "plasma" /usr/share/wayland-sessions; then
+	exec dbus-run-session startplasma-x11
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
 gnome)
-	exec dbus-run-session /bin/gnome-session;;
+	if grep -Rwq "gnome" /usr/share/wayland-sessions; then
+	exec dbus-run-session gnome-session
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
 i3)
-	exec dbus-run-session /bin/i3;;
+	if grep -Rwq "i3" /usr/share/wayland-sessions; then
+	exec dbus-run-session i3
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
 fluxbox)
-	exec dbus-run-session /bin/fluxbox;;
+	if grep -Rwq "fluxbox" /usr/share/wayland-sessions; then
+	exec dbus-run-session fluxbox
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
 openbox)
-	exec dbus-run-session /bin/openbox-session;;
+	if grep -Rwq "openbox" /usr/share/wayland-sessions; then
+	exec dbus-run-session fluxbox
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
+	exec dbus-run-session openbox-session;;
 awesome)
-	exec dbus-run-session /bin/awesome;;
+	if grep -Rwq "awesome" /usr/share/wayland-sessions; then
+	exec dbus-run-session awesome
+	else
+	printf "\nError: file doesn't exist, press any key to return to prompt"
+	read ans
+	exec sh $slm
+	fi;;
 esac

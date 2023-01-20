@@ -6,7 +6,7 @@ slm=~/.config/posixslm/posixslm.sh
 
 case $WM in
 plasma)
-	if grep -Rwq "plasma" /usr/share/wayland-sessions; then
+	if grep -Rwq "plasma" $dir; then
 	exec dbus-run-session startplasma-wayland
 	else
 	printf "\nError: file doesn't exist, press any key to return to prompt"
@@ -14,7 +14,7 @@ plasma)
 	exec sh $slm
 	fi;;
 gnome)
-	if grep -Rwq "gnome" "$dir"; then
+	if grep -Rwq "gnome" $dir; then
 	exec dbus-run-session gnome-shell --wayland
 	else
 	printf "\nError: file doesn't exist, press any key to return to prompt"
@@ -22,7 +22,7 @@ gnome)
 	exec sh $slm
 	fi;;
 sway)
-	if grep -Rwq "sway" /usr/share/wayland-sessions; then
+	if grep -Rwq "sway" $dir; then
 	exec dbus-run-session sway
 	else
 	printf "\nError: file doesn't exist, press any key to return to prompt"

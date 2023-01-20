@@ -10,22 +10,24 @@ date=$(date)
 logincheck=$(last | head -n 6)
 envtty=$(readlink /proc/$$/exe)
 alias sxfix="exec startx ~/.config/posixslm/xinitrc"
-alias startw="exec ~/.config/posixslm/waylandrc"
+alias winit="exec ~/.config/posixslm/waylandrc"
 
 ## Exit to TTY
 
 ttyexit()
 {
+printf "\nEntered exit prompt\n"
+while true; do
 printf "Do you want to return to the TTY or login menu? (T/E/L) "
-while read -r tel; do
+read -r tel
 	case $tel in
-	[Tt]* ) printf "\nExiting to TTY shell...\n"
+	[Tt]) printf "\nExiting to TTY shell...\n"
 	exec $SHELL;;
-	[Ee]* ) printf "\nExiting to TTY login...\n"
+	[Ee]) printf "\nExiting to TTY login...\n"
 	exit;;
-	[Ll]* ) printf "\nReturning to login screen...\n"
+	[Ll]) printf "\nReturning to login screen...\n"
 	break;;
-	*) printf "\nIncorrect input detected, repeating prompt...\n"
+	*) printf "\nError: input empty or option non-existent\n"
 	esac
 done
 }
@@ -34,21 +36,26 @@ done
 
 wayland()
 {
-printf "What Wayland desktop environment do you want to enter? (K/G/S/X/N) "
-while read -r kgsxn; do
-	case $kgsxn in
-	[Kk]* ) printf "\nStarting KDE Plasma (Wayland)...\n"
-	WM=kde startw;;
-	[Gg]* ) printf "\nStarting GNOME (Wayland)...\n"
-	WM=gnome startw;;
-	[Ss]* ) printf "\nStarting Sway...\n"
-	WM=sway startw;;
-	[Xx]* ) printf "\nAborting, going to login menu...\n"
-	break;;
-	[Nn]* ) printf "\nGoing to exit prompt...\n"
-	ttyexit;;
-	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
-	esac
+printf "\nEntered Wayland prompt\n"
+while true; do
+printf "\nWhat Wayland desktop environment do you want to enter?"
+printf "\n\nThe following options are available:\nView waylandrc, Exit, Execute WM (v/x/INPUT) "
+read -r runwm
+	if [ "$runwm" = "v" ]; then
+	printf "\nListing waylandrc content...\n\n"
+	cat ~/.config/posixslm/waylandrc
+	elif [ "$runwm" = "x" ]; then
+	ttyexit
+	elif [ -z "$runwm" ]; then
+	printf "\nError: input cannot be empty\n"
+	else
+	printf "\nExecuting variable into waylandrc...\n"
+		if grep -wq "$runwm" ~/.config/posixslm/waylandrc; then
+		WM=$runwm winit
+		else
+		printf "\nError: illegal input"
+		fi
+	fi
 done
 }
 
@@ -56,33 +63,32 @@ done
 
 xorg()
 {
-printf "What X.Org desktop environment do you want to enter? (K/G/I/A/O/F/X/N) "
-while read -r kgiaofxn; do
-	case $kgiaofxn in
-	[Kk]* ) printf "\nStarting KDE Plasma...\n"
-	WM=kde sxfix;;
-	[Gg]* ) printf "\nStarting GNOME...\n"
-	WM=gnome sxfix;;
-	[Ii]* ) printf "\nStarting i3wm...\n"
-	WM=i3wm sxfix;;
-	[Aa]* ) printf "\nStarting awesomewm...\n"
-	WM=awesome sxfix;;
-	[Oo]* ) printf "\nStarting Openbox...\n"
-	WM=openbox sxfix;;
-	[Ff]* ) printf "\nStarting Fluxbox...\n"
-	WM=fluxbox sxfix;;
-	[Xx]* ) printf "\nAborting, going to login menu...\n"
-	break;;
-	[Nn]* ) printf "\nGoing to exit prompt...\n"
-	ttyexit;;
-	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
-	esac
+printf "\nEntered X.Org prompt\n"
+while true; do
+printf "\nWhat X.Org desktop environment do you want to enter?\n"
+printf "The following options are available:\nView xinitrc, Exit, Execute WM (v/x/INPUT) "
+read -r runwm
+	if [ "$runwm" = "v" ]; then
+	printf "\nListing xinitrc content...\n"
+	cat ~/.config/posixslm/xinitrc
+	elif [ "$runwm" = "x" ]; then
+	ttyexit
+	elif [ -z "$runwm" ]; then
+	printf "\nError: input cannot be empty\n"
+	else
+	printf "\nExecuting variable into xinitrc...\n"
+		if grep -wq "$runwm" ~/.config/posixslm/xinitrc; then
+		WM=$runwm sxfix
+		else
+		printf "\nError: illegal input"
+		fi
+	fi
 done
 }
 
-## Run a function that creates a TTY-based "display manager"
+# Run a function that creates a TTY-based "display manager"
 
-posixslmlogin()
+slmlogin()
 {
 clear
 printf "\nPOSIX Shell Login Manager\n\n"
@@ -91,23 +97,19 @@ printf "Recent logins:\n%s\n\n" "$logincheck"
 printf "The time and date is %s \n\n" "$date"
 printf "The current shell in usage is %s \n\n" "$envtty"
 printf "The following X11 desktop environments are installed:\n\n"
-ls -l /usr/share/xsessions/
+ls -1 /usr/share/xsessions
 printf "\nThe following Wayland desktop environments are installed:\n\n"
-ls -l /usr/share/wayland-sessions/
+ls -1 /usr/share/wayland-sessions
 printf "\nNOTE: .desktop files from environments that cannot be found cannot be run.\n\n"
 
+while true; do
 printf "Do you want to run an X.Org or Wayland graphical server? (X/W/N) "
-while read -r xwn; do
+read -r xwn
 	case $xwn in
-	[Xx]* ) printf "\nStarting X.Org prompt...\n\n"
-	xorg
-	;;
-	[Ww]* ) printf "\nStarting Wayland prompt...\n\n"
-	wayland
-	;;
-	[Nn]* ) printf "\nGoing to exit prompt...\n\n"
-	ttyexit;;
-	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
+	[Xx]) xorg;;
+	[Ww]) wayland;;
+	[Nn]) ttyexit;;
+	* ) printf "\nError: input empty or option non-existent\n";;
 	esac
 done
 }
@@ -116,15 +118,14 @@ done
 
 warning()
 {
-printf "TTY1 was not detected.\nIt is not recommended to run a desktop environment outside of TTY1.\n"
+while true; do
+printf "WARNING: TTY1 was not detected.\nIt is not recommended to run a desktop environment outside of TTY1.\n"
 printf "Do you want to continue? (Y/N) "
-while read -r yn; do
+read -r yn
 	case $yn in
-	[Yy]* ) printf "\nContinuing...\n"
-	login;;
-	[Nn]* ) printf "\nExiting...\n"
-	ttyexit;;
-	* ) printf "\nIncorrect input detected, repeating prompt...\n";;
+	[Yy]) slmlogin;;
+	[Nn]) ttyexit;;
+	* ) printf "\nError: input empty or option non-existent\n";;
 	esac
 done
 }
@@ -132,8 +133,5 @@ done
 ## Check for TTY window; start script
 # If not TTY1, warn user from starting WM/DE
 
-if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
-  posixslmlogin
-else
-  warning
-fi
+[ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ] && slmlogin
+warning

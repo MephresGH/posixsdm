@@ -1,4 +1,4 @@
-#!/bin/sh
+-#!/bin/sh
 
 ### POSIX Shell Login Manager
 ### Licensed under GNU General Public License v3.0
@@ -9,8 +9,8 @@ user=$(whoami)
 date=$(date)
 logincheck=$(last | head -n 6)
 envtty=$(readlink /proc/$$/exe)
-alias sxfix="exec startx ~/.config/posixslm/xinitrc"
-alias winit="exec ~/.config/posixslm/waylandrc"
+xdir=~/.config/posixslm/xinitrc
+wdir=~/.config/posixslm/waylandrc
 
 ## Exit to TTY
 
@@ -27,10 +27,11 @@ read -r tel
 	exit;;
 	[Ll]) printf "\nReturning to login screen...\n"
 	break;;
-	*) printf "\nError: input empty or option non-existent\n"
+	*) printf "\nError: illegal input\n"
 	esac
 done
 }
+
 
 ## Start a Wayland login prompt
 
@@ -43,23 +44,24 @@ printf "\n\nThe following options are available:\nView waylandrc, Exit, Execute 
 read -r runwm
 	if [ "$runwm" = "v" ]; then
 	printf "\nListing waylandrc case switches...\n\n"
-	grep -e "^.*)" ~/.config/posixslm/waylandrc
+	grep -e "^.*)" $wdir
 	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
 	printf "\nExecuting variable into waylandrc...\n"
-		if grep -wq "$runwm" ~/.config/posixslm/waylandrc; then
-		WM=$runwm winit
+		if grep -Rwq "$runwm" $wdir && grep -Rwq "$runwm" /usr/share/wayland-sessions; then
+		WM=$runwm exec $wdir
 		else
-		printf "\nError: illegal input"
+		printf "\nError: illegal input or .desktop file not found\n"
 		fi
 	fi
 done
 }
 
 ## Start an X.Org login prompt
+# If sx does not exist, fall back to startx
 
 xorg()
 {
@@ -70,17 +72,21 @@ printf "The following options are available:\nView xinitrc, Exit, Execute WM (v/
 read -r runwm
 	if [ "$runwm" = "v" ]; then
 	printf "\nListing xinitrc case switches...\n"
-	grep -e "^.*)" ~/.config/posixslm/xinitrc
+	grep -e "^.*)" $xdir
 	elif [ "$runwm" = "x" ]; then
 	ttyexit
 	elif [ -z "$runwm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
 	printf "\nExecuting variable into xinitrc...\n"
-		if grep -wq "$runwm" ~/.config/posixslm/xinitrc; then
-		WM=$runwm sxfix
+		if grep -Rwq "$runwm" $xdir && grep -Rwq "$runwm" /usr/share/xsessions; then
+			if ! command -v sx; then
+			WM=$runwm exec startx $xdir
+			else
+			WM=$runwm exec sx $xdir
+			fi
 		else
-		printf "\nError: illegal input"
+		printf "\nError: illegal input or .desktop file not found\n"
 		fi
 	fi
 done
@@ -109,7 +115,7 @@ read -r xwn
 	[Xx]) xorg;;
 	[Ww]) wayland;;
 	[Nn]) ttyexit;;
-	* ) printf "\nError: input empty or option non-existent\n";;
+	* ) printf "\nError: input empty or illegal option\n";;
 	esac
 done
 }
@@ -125,7 +131,7 @@ read -r yn
 	case $yn in
 	[Yy]) slmlogin;;
 	[Nn]) ttyexit;;
-	* ) printf "\nError: input empty or option non-existent\n";;
+	* ) printf "\nError: input empty or illegal option\n";;
 	esac
 done
 }
@@ -133,5 +139,8 @@ done
 ## Check for TTY window; start script
 # If not TTY1, warn user from starting WM/DE
 
-[ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ] && slmlogin
-warning
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+  slmlogin
+else
+  warning
+fi

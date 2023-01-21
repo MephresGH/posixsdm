@@ -5,10 +5,6 @@
 
 ## Create static variables and aliases for simple repeating of code
 
-user=$(whoami)
-date=$(date)
-logincheck=$(last | head -n 6)
-envtty=$(readlink /proc/$$/exe)
 xses=/usr/share/xsessions
 wses=/usr/share/wayland-sessions
 
@@ -39,19 +35,19 @@ wayland()
 {
 printf "\nEntered Wayland prompt\n"
 while true; do
-printf "\nWhat Wayland desktop environment do you want to enter?"
-printf "\n\nThe following options are available:\nView .desktop files, Exit, Execute WM (v/x/INPUT) "
-read -r runwm
-	if [ "$runwm" = "v" ]; then
+printf "\nWhat Wayland desktop environment do you want to enter?\n"
+printf "\nThe following options are available:\nView .desktop files, Exit, Execute WM (v/x/INPUT) "
+read -r wm
+	if [ "$wm" = "v" ]; then
 	printf "\n"
 	ls -1 $wses
-	elif [ "$runwm" = "x" ]; then
+	elif [ "$wm" = "x" ]; then
 	ttyexit
-	elif [ -z "$runwm" ]; then
+	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-		if grep -Rwq "$runwm" $wses; then
-		exec dbus-run-session $runwm
+		if grep -Rwq "$wm" $wses; then
+		exec dbus-run-session $wm
 		else
 		printf "\nError: illegal input or .desktop file not found\n"
 		fi
@@ -68,20 +64,20 @@ printf "\nEntered X.Org prompt\n"
 while true; do
 printf "\nWhat X.Org desktop environment do you want to enter?\n"
 printf "The following options are available:\nView .desktop files, Exit, Execute WM (v/x/INPUT) "
-read -r runwm
-	if [ "$runwm" = "v" ]; then
+read -r wm
+	if [ "$wm" = "v" ]; then
 	printf "\n"
 	ls -1 $xses
-	elif [ "$runwm" = "x" ]; then
+	elif [ "$wm" = "x" ]; then
 	ttyexit
-	elif [ -z "$runwm" ]; then
+	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-		if grep -Rwq "$runwm" $xses; then
+		if grep -Rwq "$wm" $xses; then
 			if ! command -v sx; then
-			exec dbus-run-session startx $runwm
+			exec dbus-run-session startx $wm
 			else
-			exec dbus-run-session sx $runwm
+			exec dbus-run-session sx $wm
 			fi
 		else
 		printf "\nError: illegal input or .desktop file not found\n"
@@ -96,10 +92,13 @@ slmlogin()
 {
 clear
 printf "\nPOSIX Shell Login Manager\n\n"
-printf "You have logged into the user %s \n\n" "$user"
-printf "Recent logins:\n%s\n\n" "$logincheck"
-printf "The time and date is %s \n\n" "$date"
-printf "The current shell in usage is %s \n\n" "$envtty"
+printf "You have logged into the user "
+whoami
+printf "\n\nRecent logins"
+last | head -n 6
+printf "\n\nThe time and date is "
+date
+printf "\n\nThe current shell in usage is $SHELL\n\n"
 printf "The following X11 desktop environments are installed:\n\n"
 ls -1 $xses
 printf "\nThe following Wayland desktop environments are installed:\n\n"

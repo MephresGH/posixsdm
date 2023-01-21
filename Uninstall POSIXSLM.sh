@@ -11,7 +11,9 @@ printf 'The following files will be removed:\n'
 find ~/.config/posixslm && rm -r ~/.config/posixslm && printf 'The scripts have been removed.\n'|| printf 'No posixslm folder was found. Continuing...\n'
 printf 'Removing POSIXSLM from .profile...\n'
 sed -i 's+exec sh ~/.config/posixslm/posixslm.sh++g' ~/.zprofile
+sed -i 's+sh ~/.config/posixslm/posixslm.sh++g' ~/.zprofile
 sed -i 's+exec sh ~/.config/posixslm/posixslm.sh++g' ~/.profile
+sed -i 's+sh ~/.config/posixslm/posixslm.sh++g' ~/.profile
 exit
 }
 

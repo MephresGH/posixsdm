@@ -94,11 +94,11 @@ clear
 printf "\nPOSIX Shell Login Manager\n\n"
 printf "You have logged into the user "
 whoami
-printf "\n\nRecent logins"
+printf "\nRecent logins:\n\n"
 last | head -n 6
-printf "\n\nThe time and date is "
+printf "\nThe time and date is "
 date
-printf "\n\nThe current shell in usage is $SHELL\n\n"
+printf "\nThe current shell in usage is $SHELL\n\n"
 printf "The following X11 desktop environments are installed:\n\n"
 ls -1 $xses
 printf "\nThe following Wayland desktop environments are installed:\n\n"

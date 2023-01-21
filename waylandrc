@@ -1,32 +1,12 @@
 #!/bin/sh
 
 XDG_SESSION_TYPE=wayland
-dir=/usr/share/wayland-sessions
-slm=~/.config/posixslm/posixslm.sh
 
 case $WM in
 plasma)
-	if grep -Rwq "plasma" $dir; then
-	exec dbus-run-session startplasma-wayland
-	else
-	printf "\nError: file doesn't exist, press any key to return to prompt"
-	read ans
-	exec sh $slm
-	fi;;
+	exec dbus-run-session startplasma-wayland;;
 gnome)
-	if grep -Rwq "gnome" $dir; then
-	exec dbus-run-session gnome-shell --wayland
-	else
-	printf "\nError: file doesn't exist, press any key to return to prompt"
-	read ans
-	exec sh $slm
-	fi;;
+	exec dbus-run-session gnome-shell --wayland;;
 sway)
-	if grep -Rwq "sway" $dir; then
-	exec dbus-run-session sway
-	else
-	printf "\nError: file doesn't exist, press any key to return to prompt"
-	read ans
-	exec sh $slm
-	fi;;
+	exec dbus-run-session sway;;
 esac

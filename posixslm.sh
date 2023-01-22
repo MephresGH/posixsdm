@@ -46,7 +46,7 @@ read -r wm
 	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-	runwm=$(grep -swo "Exec=.*" $wses/$wm.desktop | sed 's/'Exec='//g')
+	runwm=$(sed -n 's/^Exec=*//p' "$wses/$wm.desktop" 2> /dev/null)
 		if grep -Rwq "$wm" "$wses" && test -f "$wses/$wm.desktop"; then
 		exec dbus-run-session $runwm
 		else
@@ -74,7 +74,7 @@ read -r wm
 	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-	runwm=$(grep -swo "Exec=.*" "$xses/$wm.desktop" | sed 's/'Exec='//g')
+	runwm=$(sed -n 's/^Exec=*//p' "$xses/$wm.desktop" 2> /dev/null)
 		if grep -Rwq "$wm" $xses && test -f "$xses/$wm.desktop"; then
 			if ! command -v sx; then
 			exec dbus-run-session startx $runwm

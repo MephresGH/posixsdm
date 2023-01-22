@@ -22,7 +22,7 @@ read -r tel
 	[Ee]) printf "\nExiting to TTY login...\n"
 	exit;;
 	[Ll]) printf "\nReturning to login screen...\n"
-	break;;
+	slmlogin;;
 	*) printf "\nError: illegal input\n"
 	esac
 done
@@ -46,8 +46,9 @@ read -r wm
 	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-		if grep -Rwq "$wm" $wses; then
-		exec dbus-run-session $wm
+	runwm=$(grep -swo "Exec=.*" $wses/$wm.desktop | sed 's/'Exec='//g')
+		if grep -Rwq "$wm" "$wses" && test -f "$wses/$wm.desktop"; then
+		exec dbus-run-session $runwm
 		else
 		printf "\nError: illegal input or .desktop file not found\n"
 		fi
@@ -73,11 +74,12 @@ read -r wm
 	elif [ -z "$wm" ]; then
 	printf "\nError: input cannot be empty\n"
 	else
-		if grep -Rwq "$wm" $xses; then
+	runwm=$(grep -swo "Exec=.*" "$xses/$wm.desktop" | sed 's/'Exec='//g')
+		if grep -Rwq "$wm" $xses && test -f "$xses/$wm.desktop"; then
 			if ! command -v sx; then
-			exec dbus-run-session startx $wm
+			exec dbus-run-session startx $runwm
 			else
-			exec dbus-run-session sx $wm
+			exec dbus-run-session sx $runwm
 			fi
 		else
 		printf "\nError: illegal input or .desktop file not found\n"

@@ -19,8 +19,8 @@ The following programs are required for this suite of scripts to work:
 
 - xauth
 - xorg
-- xorg-xinit (optional; default)
-- sx (optional)
+- xorg-xinit (optional)
+- sx (implemented; default)
 - bash (optional; default)
 - dash (optional)
 - ksh (optional)

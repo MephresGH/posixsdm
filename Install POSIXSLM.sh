@@ -8,12 +8,9 @@
 zshell()
 {
 mkdir ~/.config/posixslm
-chmod +x ./xinitrc
 chmod +x ./posixslm.sh
-chmod +x ./waylandrc
-cp ./xinitrc ~/.config/posixslm
 cp ./posixslm.sh ~/.config/posixslm
-cp ./waylandrc ~/.config/posixslm
+cp ./sx.sh ~/.config/posixslm
 find ~/.zprofile || printf 'Cannot find user ZShell profile, creating .zprofile...\n' && touch ~/.zprofile
 printf 'exec sh ~/.config/posixslm/posixslm.sh' >> ~/.zprofile
 printf 'The scripts have been installed.\n'
@@ -26,12 +23,9 @@ exit
 posix()
 {
 mkdir ~/.config/posixslm
-chmod +x ./xinitrc
 chmod +x ./posixslm.sh
-chmod +x ./waylandrc
-cp ./xinitrc ~/.config/posixslm
 cp ./posixslm.sh ~/.config/posixslm
-cp ./waylandrc ~/.config/posixslm
+cp ./sx.sh ~/.config/posixslm
 find ~/.profile || printf 'Cannot find user POSIX Shell profile, creating .profile...\n' && touch ~/.profile
 printf 'exec sh ~/.config/posixslm/posixslm.sh' >> ~/.profile
 printf 'The scripts have been installed.\n'

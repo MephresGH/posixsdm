@@ -1,0 +1,21 @@
+## RELEASES
+
+Version: v1.0
+- Initial release
+
+
+Version: v1.1
+- replace $userinput grep sed with sed only
+
+Version: v1.2
+- Move comments to DOCUMENTATION.txt
+- Remove if-elif-else code; re-implement as switch statements or short-circuit logical operators
+- Merge CHANGELOG information
+- Remove startx and sx dependencies
+- Implement adjusted sx shell script
+
+Version: v1.3
+- Remove unnecessary "sh" from install script
+- Rename NOTICE.txt to README.txt
+- Remove double-arrows in scripts
+- Replace home directory approach "~/" with "$HOME"

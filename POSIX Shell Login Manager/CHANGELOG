@@ -3,7 +3,6 @@
 Version: v1.0
 - Initial release
 
-
 Version: v1.1
 - replace $userinput grep sed with sed only
 
@@ -19,3 +18,12 @@ Version: v1.3
 - Rename NOTICE.txt to README.txt
 - Remove double-arrows in scripts
 - Replace home directory approach "~/" with "$HOME"
+
+Version: v2.0
+- Renaming of the project
+- Replaced more "if-else" condition checks with switch statements
+- Removed POSIXSDM folder
+- Simplified and optimized sx script
+- Added parameters
+- Re-inserted comments and removed the DOCUMENTATION.txt file
+- Introduced $wcheck and $xcheck for instant starting of desktops if only one .desktop file is found

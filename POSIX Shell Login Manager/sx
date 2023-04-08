@@ -1,0 +1,30 @@
+#!/bin/sh
+# sx - start an xserver
+# for documentation, see github.com/Earnestly/sx
+
+cleanup() {
+[ "$pid" ] && case $? in 
+	0) kill -0 "$pid" 2>/dev/null
+	kill "$pid"
+	wait "$pid"
+	xorg=$?
+esac
+
+xauth remove :"$tty"
+
+case "$1" in
+	exit) exit "${xorg:-0}"
+esac
+}
+
+tty=$(tty)
+tty=${tty#/dev/tty}
+cfgdir="$HOME"
+export XAUTHORITY="$cfgdir/.Xauthority"
+> $XAUTHORITY
+trap 'cleanup kill -INT "$$"' INT
+trap 'cleanup exit' EXIT HUP TERM QUIT
+trap 'DISPLAY=:$tty exec "${@-$cfgdir/sxrc}" & wait $!' USR1
+xauth add :"$tty" MIT-MAGIC-COOKIE-1 "$(od -An -N16 -tx /dev/urandom | tr -d ' ')"
+(trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & pid=$!
+wait "$pid"

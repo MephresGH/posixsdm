@@ -15,22 +15,27 @@ read -r yn
 	case $yn in
 		[Yy]) printf "\nInstalling.\n"
 		chmod +x ./sx
-		if [ ! -f /usr/bin/sx ]; then
-			sudo cp ./sx /usr/bin/sx
-		else
-			printf "sx was found. Do you want to override the current installation? (Y/N) "
+		[ ! -f /usr/bin/sx ]
+		case $? in
+			0) sudo cp ./sx /usr/bin/sx;;
+			*) printf "sx was found. Do you want to override the current installation? (Y/N) "
+			while true; do
 			read -r yn
 				case $yn in
 					[Yy]) printf "\nContinuing with the installation.\n"
 					sudo rm /usr/bin/sx
-					sudo cp ./sx /usr/bin/sx;;
+					sudo cp ./sx /usr/bin/sx
+					break;;
 					[Nn]) printf "\nSkipping installation of sx, continuing."
+					break;;
+					*) printf "\nError: invalid input\n"
 				esac
-		fi
+			done
+		esac
 		break;;
 		[Nn]) printf "\nAborting.\n"
 		break;;
-		*) printf "\nIncorrect input detected, repeating prompt...\n"
+		*) printf "\nError: invalid input\n"
 	esac
 done
 
@@ -45,7 +50,7 @@ read -r yn
 		[Yy]) reboot;;
 		[Nn]) printf "\nExiting without rebooting. Please uninstall your current login manager and reboot your machine to run POSIXSDM.\n"
 		exit;;
-		*) printf "\nIncorrect input detected, repeating prompt...\n"
+		*) printf "\nError: invalid input\n"
 	esac
 done
 }
@@ -62,18 +67,23 @@ read -r yn
 	case $yn in
 		[Yy]) printf "\nInstalling.\n"
 		chmod +x ./sx
-		if [ ! -f /usr/bin/sx ]; then
-			sudo cp ./sx /usr/bin/sx
-		else
-			printf "sx was found. Do you want to override the current installation? (Y/N) "
+		[ ! -f /usr/bin/sx ]
+		case $? in
+			0) sudo cp ./sx /usr/bin/sx;;
+			*) printf "sx was found. Do you want to override the current installation? (Y/N) "
+			while true; do
 			read -r yn
 				case $yn in
 					[Yy]) printf "\nContinuing with the installation.\n"
 					sudo rm /usr/bin/sx
-					sudo cp ./sx /usr/bin/sx;;
+					sudo cp ./sx /usr/bin/sx
+					break;;
 					[Nn]) printf "\nSkipping installation of sx, continuing."
+					break;;
+					*) printf "\nError: invalid input\n"
 				esac
-		fi
+			done
+		esac
 		break;;
 		[Nn]) printf "\nAborting.\n"
 		break;;

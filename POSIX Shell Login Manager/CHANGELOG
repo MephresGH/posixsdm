@@ -27,3 +27,10 @@ Version: v2.0
 - Added parameters
 - Re-inserted comments and removed the DOCUMENTATION.txt file
 - Introduced $wcheck and $xcheck for instant starting of desktops if only one .desktop file is found
+
+Version: v2.1
+- Further reduced amount of if-else segments
+- Added failsafe in wrun() and xrun() in case the user has no desktop environment installed
+- Added failsafe in new install and uninstall script prompts
+- Implemented more elegant condition checks in all scripts
+- Removed folder deletion segment in uninstall script

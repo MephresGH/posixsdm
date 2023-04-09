@@ -6,9 +6,14 @@
 ## POSIX script uninstaller & cleanup
 
 uninstall() {
-printf 'The following files will be removed:\n'
-[ -d $HOME/.config/posixsdm ] && rm -r $HOME/.config/posixsdm && printf "The directory has been removed.\n" || printf "No posixsdm folder was found. Continuing...\n"
-[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm && printf "The program has been removed.\n" || printf "The program has not been found. Continuing...\n"
+printf "\nRemoving POSIXSDM files and associations...\n"
+[ -f /usr/bin/posixsdm ]
+case $? in
+	0) sudo rm /usr/bin/posixsdm
+	printf "The program has been removed.\n";;
+	*) printf "The program has not been found. Continuing...\n"
+esac
+
 printf "Removing POSIXSDM from .profile...\n"
 sed -i 's+exec posixsdm -r++g' ~/.zprofile 2>/dev/null
 sed -i 's+sh posixsdm -r++g' ~/.zprofile 2>/dev/null
@@ -38,8 +43,7 @@ printf "Do you want to proceed? (Y/N) "
 
 while read -r yn; do
 	case $yn in
-		[Yy]) printf "\nRemoving .config POSIXSDM folder...\n"
-		uninstall;;
+		[Yy]) uninstall;;
 		[Nn]) printf "\nExiting...\n"
 		exit;;
 		*) printf "\nIncorrect input detected, repeating prompt...\n"

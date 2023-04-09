@@ -3,7 +3,8 @@
 # for documentation, see github.com/Earnestly/sx
 
 cleanup() {
-[ "$pid" ] && case $? in 
+[ "$pid" ]
+case $? in
 	0) kill -0 "$pid" 2>/dev/null
 	kill "$pid"
 	wait "$pid"

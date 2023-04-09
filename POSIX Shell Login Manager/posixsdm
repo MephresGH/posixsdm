@@ -29,7 +29,10 @@ wcheck=$(ls "$wses" | wc -l)
 case "$wcheck" in
 	1) printf "\nOnly one environment found, running\n"
 	runwm=$(sed -n 's/^Exec=//p' $wses/*.desktop)
-	exec dbus-launch --exit-with-session $runwm
+	exec dbus-launch --exit-with-session $runwm;;
+	0) printf "\!!!CRITICAL ERROR!!!\n\nNo Wayland-based window manager or desktop environment found\nPress any key to go back to the start menu "
+	read az
+	posixslm
 esac
 
 while true; do
@@ -40,12 +43,12 @@ read -r wm
 		[Vv]) printf "\n"
 		ls -1 $wses;;
 		[Xx]) ttyexit;;
-		$wm) if [ -f $wses/$wm.desktop ]; then
-			runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
-			exec dbus-launch --exit-with-session $runwm
-		else
-			printf "\nError: illegal input or .desktop file not found\n"
-		fi
+		$wm) [ -f $wses/$wm.desktop ]
+		case $? in
+			0) runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
+			exec dbus-launch --exit-with-session $runwm;;
+			*) printf "\nError: illegal input or .desktop file not found\n"
+		esac
 	esac
 done
 }
@@ -61,7 +64,10 @@ xcheck=$(ls "$xses" | wc -l)
 case "$xcheck" in
 	1) printf "\nOnly one environment found, running\n"
 	runwm=$(sed -n 's/^Exec=//p' $xses/*.desktop)
-	exec dbus-launch --exit-with-session $runwm
+	exec dbus-launch --exit-with-session $runwm;;
+	0) printf "\!!!CRITICAL ERROR!!!\n\nNo Xorg-based window manager or desktop environment found\nPress any key to go back to the start menu "
+	read az
+	posixslm
 esac
 
 while true; do
@@ -72,18 +78,18 @@ read -r wm
 		[Vv]) printf "\n"
 		ls -1 $xses;;
 		[Xx]) ttyexit;;
-		$wm) if [ -f $xses/$wm.desktop ]; then
-			runwm=$(sed -n 's/^Exec=//p' $xses/$wm.desktop)
+		$wm) [ -f $xses/$wm.desktop ]
+		case $? in
+			0) runwm=$(sed -n 's/^Exec=//p' $xses/$wm.desktop)
 			if [ -f /usr/bin/sx ]; then
 				exec dbus-launch --exit-with-session sx $runwm
 			elif [ -f /usr/bin/startx ]; then
 				exec dbus-launch --exit-with-session startx $runwm
 			else
-				printf "\nCritical error: Xorg cannot be run, as startx and sx cannot be found\n"
-			fi
-		else
-			printf "\nError: illegal input or .desktop file not found\n"
-		fi
+				printf "\!!!CRITICAL ERROR!!!\n\nXorg cannot be run, as startx and sx cannot be found\n"
+			fi;;
+			*) printf "\nError: illegal input or .desktop file not found\n"
+		esac
 	esac
 done
 }
@@ -147,10 +153,16 @@ callwin() {
 case $server in
 	xorg) concheck
 	runwm=$(sed -n 's/^Exec=//p' $xses/$wm.desktop)
-	[ -f $xses/$wm.desktop ] && exec dbus-launch --exit-with-session sx $runwm;;
+	[ -f $xses/$wm.desktop ]
+	case $? in
+		0) exec dbus-launch --exit-with-session sx $runwm
+	esac;;
 	wayland) concheck
 	runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
-	[ -f $wses/$wm.desktop ] && exec dbus-launch --exit-with-session $runwm
+	[ -f $wses/$wm.desktop ]
+	case $? in
+		0) exec dbus-launch --exit-with-session $runwm
+	esac
 esac
 }
 
@@ -169,9 +181,11 @@ case $1 in
 	printf "\n-h, --help\tDisplay this help message"
 	printf "\n-x [INPUT] \tRun startx or sx directly (not recommended)"
 	printf "\n-w [INPUT]\tRun wayland-based environmet directly (not recommended)\n";;
-	-x) wm=$2 && server=xorg
+	-x) wm=$2
+	server=xorg
 	callwin;;
-	-w) wm=$2 && server=wayland
+	-w) wm=$2
+	server=wayland
 	callwin;;
 	*) printf "Error: wrong or empty parameter\nUsage: posixsdm <option> [...]\nOptions: $opt\n"
 esac

@@ -181,12 +181,12 @@ case $1 in
 	printf "Usage: posixsdm <option> [...]\nOptions:"
 	printf "\n-r, --run\tRun the script and do a variable check"
 	printf "\n-h, --help\tDisplay this help message"
-	printf "\n-x [INPUT] \tRun startx or sx directly (not recommended)"
-	printf "\n-w [INPUT]\tRun wayland-based environmet directly (not recommended)\n";;
-	-x) wm=$2
+	printf "\n-x, --xorg [INPUT] \tRun startx or sx directly (not recommended)"
+	printf "\n-w, --wayland [INPUT]\tRun wayland-based environmet directly (not recommended)\n";;
+	-x|--xorg) wm=$2
 	server=xorg
 	callwin;;
-	-w) wm=$2
+	-w|--wayland) wm=$2
 	server=wayland
 	callwin;;
 	*) printf "Error: wrong or empty parameter\nUsage: posixsdm <option> [...]\nOptions: $opt\n"

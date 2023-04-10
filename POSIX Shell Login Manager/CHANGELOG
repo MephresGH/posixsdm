@@ -39,3 +39,4 @@ Version: v2.2
 - Fixed the call of a non-existent function within POSIXSDM (introduced in v2.1; "posixslm" to "sdmlogin")
 - Changed the default directory for local user-dependant sxrc config files ($HOME/.config/sx/sxrc)
 - Replaced all if-else statements with switch segments
+- Expanded -x and -w parameters to include full names (--xorg, --wayland)

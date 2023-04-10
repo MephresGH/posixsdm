@@ -39,7 +39,12 @@ read -r yn
 	esac
 done
 
-[ -f $HOME/.zprofile ] || printf "Cannot find user ZShell profile, creating .zprofile\n" && > $HOME/.zprofile
+[ -f $HOME/.zprofile ]
+case $? in
+	1) printf "Cannot find user ZShell profile, creating .zprofile\n"
+	> $HOME/.zprofile
+esac
+
 printf "exec posixsdm -r" > $HOME/.zprofile
 printf "The scripts have been installed.\n"
 
@@ -91,7 +96,12 @@ read -r yn
 	esac 
 done
 
-[ -f $HOME/.profile ] || printf "Cannot find user POSIX Shell profile, creating .profile\n" && > $HOME/.profile
+[ -f $HOME/.profile ]
+case $? in
+	1) printf "Cannot find user POSIX Shell profile, creating .profile\n"
+	> $HOME/.profile
+esac
+
 printf "exec posixsdm -r" > $HOME/.profile
 printf "The scripts have been installed.\n"
 

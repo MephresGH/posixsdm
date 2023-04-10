@@ -34,3 +34,8 @@ Version: v2.1
 - Added failsafe in new install and uninstall script prompts
 - Implemented more elegant condition checks in all scripts
 - Removed folder deletion segment in uninstall script
+
+Version: v2.2
+- Fixed the call of a non-existent function within POSIXSDM (introduced in v2.1; "posixslm" to "sdmlogin")
+- Changed the default directory for local user-dependant sxrc config files ($HOME/.config/sx/sxrc)
+- Replaced all if-else statements with switch segments

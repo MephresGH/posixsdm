@@ -9,7 +9,7 @@ Bourne Shell (SH), the Bourne Again Shell (BASH), Z Shell (ZSH), Debian Almquist
 For licensing and copyright notices, please refer to the included LICENSE file.
 
 ### INSTALLATION
-To install the POSIX Shell Display Manager, either drag and drop the file "posixsdm" into /usr/bin/ and add "exec posixsdm -r" or "exec posixsdm -x/-w (INSERT WM/DE)" to your local shell dotprofile config, or install it via the included installation script.
+To install the POSIX Shell Display Manager, either copy the file "posixsdm" into /usr/bin/ and add "exec posixsdm -r" for standard usage, or "exec posixsdm -x/-w (INSERT WM/DE)" for the direct start of a window manager/desktop environment of your choice to your local shell .profile config, or install it via the included installation script.
 
 ### REMOVAL
 To uninstall the scripts is as simple as installing them; either remove them manually, or run the uninstall script.

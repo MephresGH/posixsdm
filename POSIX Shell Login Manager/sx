@@ -3,13 +3,11 @@
 # for documentation, see github.com/Earnestly/sx
 
 cleanup() {
-[ "$pid" ]
-case $? in
-	0) kill -0 "$pid" 2>/dev/null
-	kill "$pid"
-	wait "$pid"
+if [ "$srv" ] && kill -0 "$srv" 2>/dev/null; then
+	kill "$srv"
+	wait "$srv"
 	xorg=$?
-esac
+fi
 
 xauth remove :"$tty"
 
@@ -20,11 +18,12 @@ esac
 
 tty=$(tty)
 tty=${tty#/dev/tty}
-export XAUTHORITY="$HOME/.Xauthority"
+cfgdir=$HOME/.config
+export XAUTHORITY="$cfgdir/xauthority"
 > $XAUTHORITY
 trap 'cleanup kill -INT "$$"' INT
 trap 'cleanup exit' EXIT HUP TERM QUIT
-trap 'DISPLAY=:$tty exec "${@-$HOME/.config/sx/sxrc}" & wait $!' USR1
+trap 'DISPLAY=:$tty exec "${@:-$cfgdir/sxrc}" & wait $!' USR1
 xauth add :"$tty" MIT-MAGIC-COOKIE-1 "$(od -An -N16 -tx /dev/urandom | tr -d ' ')"
-(trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & pid=$!
-wait "$pid"
+(trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & srv=$!
+wait "$srv"

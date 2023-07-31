@@ -7,20 +7,17 @@
 
 uninstall() {
 printf "\nRemoving POSIXSDM files and associations...\n"
-[ -f /usr/bin/posixsdm ]
-case $? in
-	0) sudo rm /usr/bin/posixsdm
-	printf "The program has been removed.\n";;
-	*) printf "The program has not been found. Continuing...\n"
-esac
+if [ -f /usr/bin/posixsdm ]; then
+	sudo rm /usr/bin/posixsdm
+	rm -r $HOME/.config/sx 2>/dev/null
+	printf "The program has been removed.\n"
+else
+	printf "The program has not been found. Continuing...\n"
+fi
 
 printf "Removing POSIXSDM from .profile...\n"
-sed -i 's+exec posixsdm -r++g' ~/.zprofile 2>/dev/null
-sed -i 's+sh posixsdm -r++g' ~/.zprofile 2>/dev/null
-sed -i 's+posixsdm -r++g' ~/.zprofile 2>/dev/null
-sed -i 's+exec posixsdm -r++g' ~/.profile 2>/dev/null
-sed -i 's+sh posixsdm -r++g' ~/.profile 2>/dev/null
-sed -i 's+posixsdm -r++g' ~/.profile 2>/dev/null
+sed -i '/posixsdm/d' ~/.profile 2>/dev/null
+sed -i '/posixsdm/d' ~/.zprofile 2>/dev/null
 
 while true; do
 printf "\nThe script has finished. Do you want to reboot the machine? (Y/N) "

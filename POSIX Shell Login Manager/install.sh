@@ -6,6 +6,7 @@
 ## ZShell-specific setup for POSIXSDM
 
 zshell() {
+
 chmod +x ./posixsdm
 sudo cp ./posixsdm /usr/bin/
 
@@ -14,24 +15,24 @@ printf "\nDo you want to install a customized sx script (startx alternative)? (Y
 read -r yn
 	case $yn in
 		[Yy]) printf "\nInstalling.\n"
-		chmod +x ./sx
-		[ ! -f /usr/bin/sx ]
-		case $? in
-			0) sudo cp ./sx /usr/bin/sx;;
-			*) printf "sx was found. Do you want to override the current installation? (Y/N) "
+		if [ ! -f /usr/bin/sx ]; then
+			chmod +x ./sx
+			sudo cp ./sx /usr/bin/sx
+		else
+			printf "sx was found. Do you want to override the current installation? (Y/N) "
 			while true; do
 			read -r yn
 				case $yn in
 					[Yy]) printf "\nContinuing with the installation.\n"
-					sudo rm /usr/bin/sx
-					sudo cp ./sx /usr/bin/sx
+					chmod +x ./sx
+					sudo cp -f ./sx /usr/bin/sx
 					break;;
 					[Nn]) printf "\nSkipping installation of sx, continuing."
 					break;;
 					*) printf "\nError: invalid input\n"
 				esac
 			done
-		esac
+		fi
 		break;;
 		[Nn]) printf "\nAborting.\n"
 		break;;
@@ -39,17 +40,15 @@ read -r yn
 	esac
 done
 
-[ -f $HOME/.zprofile ]
-case $? in
-	1) printf "Cannot find user ZShell profile, creating .zprofile\n"
+if [ ! -f $HOME/.zprofile ]; then
+	printf "Cannot find user ZShell profile, creating .zprofile\n"
 	> $HOME/.zprofile
-esac
+fi
 
 printf "exec posixsdm -r" > $HOME/.zprofile
-printf "The scripts have been installed.\n"
 
 while true; do
-printf "\nThe script has finished. Do you want to reboot the machine? (Y/N) "
+printf "The scripts have been installed. Do you want to reboot the machine? (Y/N) "
 read -r yn
 	case $yn in
 		[Yy]) reboot;;
@@ -63,6 +62,7 @@ done
 ## POSIX shell-specific setup for POSIXSDM
 
 posix() {
+
 chmod +x ./posixsdm
 sudo cp ./posixsdm /usr/bin
 
@@ -71,24 +71,24 @@ printf "\nDo you want to install a customized sx script (startx alternative)? (Y
 read -r yn
 	case $yn in
 		[Yy]) printf "\nInstalling.\n"
-		chmod +x ./sx
-		[ ! -f /usr/bin/sx ]
-		case $? in
-			0) sudo cp ./sx /usr/bin/sx;;
-			*) printf "sx was found. Do you want to override the current installation? (Y/N) "
+		if [ ! -f /usr/bin/sx ]; then
+			sudo cp ./sx /usr/bin/sx
+			chmod +x ./sx
+		else
+			printf "sx was found. Do you want to override the current installation? (Y/N) "
 			while true; do
 			read -r yn
 				case $yn in
 					[Yy]) printf "\nContinuing with the installation.\n"
-					sudo rm /usr/bin/sx
-					sudo cp ./sx /usr/bin/sx
+					chmod +x ./sx
+					sudo cp -f ./sx /usr/bin/sx
 					break;;
 					[Nn]) printf "\nSkipping installation of sx, continuing."
 					break;;
 					*) printf "\nError: invalid input\n"
 				esac
 			done
-		esac
+		fi
 		break;;
 		[Nn]) printf "\nAborting.\n"
 		break;;
@@ -96,17 +96,15 @@ read -r yn
 	esac 
 done
 
-[ -f $HOME/.profile ]
-case $? in
-	1) printf "Cannot find user POSIX Shell profile, creating .profile\n"
+if [ ! -f $HOME/.profile ]; then
+	printf "Cannot find user POSIX Shell profile, creating .profile\n"
 	> $HOME/.profile
-esac
+fi
 
 printf "exec posixsdm -r" > $HOME/.profile
-printf "The scripts have been installed.\n"
 
 while true; do
-printf "\nThe script has finished. Do you want to reboot the machine? (Y/N) "
+printf "The scripts have been installed. Do you want to reboot the machine? (Y/N) "
 read -r yn
 	case $yn in
 		[Yy]) reboot;;

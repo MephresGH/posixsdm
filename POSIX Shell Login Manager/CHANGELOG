@@ -40,3 +40,13 @@ Version: v2.2
 - Changed the default directory for local user-dependant sxrc config files ($HOME/.config/sx/sxrc)
 - Replaced all if-else statements with switch segments
 - Expanded -x and -w parameters to include full names (--xorg, --wayland)
+- Updated README.md to adjust for the newest changes
+
+Version: v2.3
+- Changed default directory for sxrc and xauthority file
+- Changed back multiple switch condition checks to if-else for performance reasons
+- Replaced dbus-launch commands in posixsdm with dbus-run-session for stability reasons
+- Replaced the uninstall script's precise sed pattern deletion with universal pattern deletion
+- Fixed an error in the install script that tried to create a .profile file even if one already existed
+- Minor adjustments for readability
+- Replaced "w" with "who" for readability and cleaner output

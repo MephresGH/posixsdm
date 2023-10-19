@@ -7,7 +7,7 @@ printf "\nEntered exit prompt\n"
 while true; do
 printf "Do you want to return to the TTY or login menu? (T/E/L) "
 read -r tel
-	case $tel in
+	case "$tel" in
 		[Tt]) printf "\nExiting to TTY shell...\n"
 		exec $SHELL;;
 		[Ee]) printf "\nExiting to TTY login...\n"
@@ -29,7 +29,7 @@ wcheck=$(ls "$wses" | wc -l)
 case "$wcheck" in
 	1) printf "\nOnly one environment found, running\n"
 	runwm=$(sed -n 's/^Exec=//p' $wses/*.desktop)
-	exec dbus-run-session $runwm;;
+	exec dbus-launch --exit-with-session $runwm;;
 	0) printf "\!!!CRITICAL ERROR!!!\n\nNo Wayland-based window manager or desktop environment found\nPress any key to go back to the start menu "
 	read az
 	sdmlogin
@@ -39,13 +39,13 @@ while true; do
 printf "\nWhat Wayland desktop environment do you want to enter?\n"
 printf "\nThe following options are available:\nView .desktop files, Exit, Execute WM (V/X/INPUT) "
 read -r wm
-	case $wm in
+	case "$wm" in
 		[Vv]) printf "\n"
 		ls -1 $wses;;
 		[Xx]) ttyexit;;
 		$wm) if [ -f $wses/$wm.desktop ]; then
 			runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
-			exec dbus-run-session $runwm
+			exec dbus-launch --exit-with-session $runwm
 		else
 			printf "\nError: illegal input or .desktop file not found\n"
 		fi
@@ -64,7 +64,7 @@ xcheck=$(ls "$xses" | wc -l)
 case "$xcheck" in
 	1) printf "\nOnly one environment found, running\n"
 	runwm=$(sed -n 's/^Exec=//p' $xses/*.desktop)
-	exec dbus-run-session $runwm;;
+	exec dbus-launch --exit-with-session $runwm;;
 	0) printf "\n!!!CRITICAL ERROR!!!\n\nNo Xorg-based window manager or desktop environment found\nPress any key to go back to the start menu "
 	read az
 	sdmlogin
@@ -74,16 +74,16 @@ while true; do
 printf "\nWhat X.Org desktop environment do you want to enter?\n"
 printf "The following options are available:\nView .desktop files, Exit, Execute WM (V/X/INPUT) "
 read -r wm
-	case $wm in
+	case "$wm" in
 		[Vv]) printf "\n"
 		ls -1 $xses;;
 		[Xx]) ttyexit;;
 		$wm) if [ -f $xses/$wm.desktop ]; then
 			runwm=$(sed -n 's/^Exec=//p' $xses/$wm.desktop)
 			if [ -f /usr/bin/sx ]; then
-				exec dbus-run-session sx $runwm
+				exec dbus-launch --exit-with-session sx $runwm
 			elif [ -f /usr/bin/startx ]; then
-				exec dbus-run-session startx $runwm
+				exec dbus-launch --exit-with-session startx $runwm
 			else
 				printf "\n!!!CRITICAL ERROR!!!\n\nXorg cannot be run, as neither startx or sx cannot be found\n"
 			fi
@@ -140,22 +140,24 @@ done
 # Set variables, check if $DISPLAY is null and the environment is TTY1
 # If neither conditions are met, enter warning prompt
 concheck() {
-case "${DISPLAY}" in
-	"") case "${XDG_VTNR}" in
-		1) return 0;;
-		*) warning
-	esac;;
-	*) warning
-esac
+if [ "${DISPLAY}" = "" ]; then
+	if [ "${XDG_VTNR}" -eq 1 ]; then
+		return 0
+	else
+		warning
+	fi
+else
+	warning
+fi
 }
 
 # Simple function to allow for direct calling of window managers and their respective servers
 callwin() {
-case $server in
+case "$server" in
 	xorg) concheck
 	runwm=$(sed -n 's/^Exec=//p' $xses/$wm.desktop)
 	if [ -f $xses/$wm.desktop ]; then
-		exec dbus-run-session sx $runwm
+		exec dbus-launch --exit-with-session sx $runwm
 	fi;;
 	wayland) concheck
 	runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
@@ -167,24 +169,24 @@ esac
 
 # Create variables and parameters for switch statement to handle of user input
 # Call the conditional check function first and continue from there
-xses=/usr/share/xsessions
-wses=/usr/share/wayland-sessions
+xses="/usr/share/xsessions"
+wses="/usr/share/wayland-sessions"
 opt="-r, -h, -x, -w"
 
-case $1 in
+case "$1" in
 	-r|--run) concheck
 	sdmlogin;;
 	-h|--help) printf "Terminal-based display manager written in POSIX Shell\n"
-	printf "Usage: posixsdm <option> [...]\nOptions:"
-	printf "\n-r, --run\tRun the script and do a variable check"
-	printf "\n-h, --help\tDisplay this help message"
-	printf "\n-x, --xorg [INPUT] \tRun startx or sx directly (not recommended)"
-	printf "\n-w, --wayland [INPUT]\tRun wayland-based environmet directly (not recommended)\n";;
+	printf "Usage: posixsdm <option> [...]\n\nOptions:\n"
+	printf -- "-r, --run\t\tRun the script and do a variable check\n"
+	printf -- "-h, --help\t\tDisplay this help message\n"
+	printf -- "-x, --xorg [INPUT] \tRun startx or sx directly (not recommended)\n"
+	printf -- "-w, --wayland [INPUT]\tRun wayland-based environmet directly (not recommended)\n";;
 	-x|--xorg) wm=$2
 	server=xorg
 	callwin;;
 	-w|--wayland) wm=$2
 	server=wayland
 	callwin;;
-	*) printf "Error: wrong or empty parameter\nUsage: posixsdm <option> [...]\nOptions: $opt\n"
+	*) printf "Error: incorrect or empty parameter\nUsage: posixsdm <option> [...]\nOptions: $opt\n"
 esac

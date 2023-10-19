@@ -50,3 +50,9 @@ Version: v2.3
 - Fixed an error in the install script that tried to create a .profile file even if one already existed
 - Minor adjustments for readability
 - Replaced "w" with "who" for readability and cleaner output
+
+Version: v2.4
+- Changed the display-related switch statement to an if-else statement
+- printf fixes
+- Minor cleanup
+- Replaced all switch statements with if statements in sx script

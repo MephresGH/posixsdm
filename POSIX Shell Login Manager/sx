@@ -11,9 +11,9 @@ fi
 
 xauth remove :"$tty"
 
-case "$1" in
-	exit) exit "${xorg:-0}"
-esac
+if [ "$1" = "exit" ]; then
+	exit "${xorg:-0}"
+fi
 }
 
 tty=$(tty)

@@ -162,7 +162,7 @@ case "$server" in
 	wayland) concheck
 	runwm=$(sed -n 's/^Exec=//p' $wses/$wm.desktop)
 	if [ -f $wses/$wm.desktop ]; then
-		exec dbus-run-session $runwm
+		exec dbus-launch --exit-with-session $runwm
 	fi
 esac
 }

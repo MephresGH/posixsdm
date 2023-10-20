@@ -56,3 +56,7 @@ Version: v2.4
 - printf fixes
 - Minor cleanup
 - Replaced all switch statements with if statements in sx script
+
+Version: v2.5
+- Reverted dbus-run-session $wm back to dbus-launch --exit-with-session $wm as no difference can be found
+- Unified both uninstall and install scripts to a singular setup script

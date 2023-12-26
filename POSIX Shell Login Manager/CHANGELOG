@@ -28,7 +28,7 @@ Version: v2.0
 - Re-inserted comments and removed the DOCUMENTATION.txt file
 - Introduced $wcheck and $xcheck for instant starting of desktops if only one .desktop file is found
 
-Version: v2.1
+vVersion: v2.1
 - Further reduced amount of if-else segments
 - Added failsafe in wrun() and xrun() in case the user has no desktop environment installed
 - Added failsafe in new install and uninstall script prompts
@@ -60,3 +60,34 @@ Version: v2.4
 Version: v2.5
 - Reverted dbus-run-session $wm back to dbus-launch --exit-with-session $wm as no difference can be found
 - Unified both uninstall and install scripts to a singular setup script
+
+Version: v3.0
+- Added basic color formatting for critical errors and important information
+- Added condition check for either a WM/DE that was given by user, or if only one WM/DE exists in xrun() and wrun()
+- Added condition check for $XCHECK and $WCHECK variables for rare excpetions of the user not having installed any graphical environments
+- Added handling and adjusting of the $XDG_SESSION_TYPE variable
+- Added failsafe for the -x and -w user options flags in the posixsdm script
+- Added quotations to most variables inside the scripts to avoid globbing and odd behaviors
+- Added multiple whitespace detections in setup and posixsdm
+- Both wrun() and xrun() now print out the DE/WM of the user's choice into console
+- Changed ">" overwrite operator with ">>" append operator in setup script
+- Changed usage of sed to affect any .profile-related files in setup script
+- Changed order of multiple condition checks in the setup script install section and the posixsdm script
+- Changed sx and sxrc locations back to pre-v2.2
+- Clean up and improve printf contents and comments
+- Fixed a switch condition oversight in the wrun() function
+- Fixed an issue in the -x and -w functions that would send the user to the main menu when using posixsdm not on TTY1
+- Fixed spelling/grammar mistakes
+- Fully implemented user option flags in the setup and posixsdm scripts
+- Overhauled condition handling
+- printf no longer calls variables directly
+- Removed $opt variable
+- Removed a condition check in setup script if no shell profile was found
+- Removed a prompt in the setup script that was called whenever sx was already installed
+- Removed a nested if-else statement in concheck() for simplification and performance reasons
+- Reduced duplicated code and unnecessary whitespace in posixsdm and setup script
+- Reduced usage of unnecessary commands and variables
+- Replaced ls command with find command
+- Reverted v2.4 switch to if-else replacements
+- Split xrun() into xrun() and xsetup, same for wrun/wsetup
+- Updated README

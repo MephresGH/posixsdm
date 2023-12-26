@@ -6,24 +6,24 @@ cleanup() {
 if [ "$srv" ] && kill -0 "$srv" 2>/dev/null; then
 	kill "$srv"
 	wait "$srv"
-	xorg=$?
+	xorg="$?"
 fi
 
 xauth remove :"$tty"
 
-if [ "$1" = "exit" ]; then
-	exit "${xorg:-0}"
-fi
+case "$1" in
+	exit) exit "${xorg:-0}"
+esac
 }
 
 tty=$(tty)
 tty=${tty#/dev/tty}
-cfgdir=$HOME/.config
-export XAUTHORITY="$cfgdir/xauthority"
-> $XAUTHORITY
+cfgdir="$HOME/.config/posixsdm"
+export XAUTHORITY="$cfgdir/Xauthority"
+> "$XAUTHORITY"
 trap 'cleanup kill -INT "$$"' INT
 trap 'cleanup exit' EXIT HUP TERM QUIT
 trap 'DISPLAY=:$tty exec "${@:-$cfgdir/sxrc}" & wait $!' USR1
 xauth add :"$tty" MIT-MAGIC-COOKIE-1 "$(od -An -N16 -tx /dev/urandom | tr -d ' ')"
-(trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & srv=$!
+(trap '' USR1 && exec Xorg :"$tty" -keeptty vt"$tty" -noreset -auth "$XAUTHORITY") & srv="$!"
 wait "$srv"

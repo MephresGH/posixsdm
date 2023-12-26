@@ -1,4 +1,4 @@
-				POSIX Shell Display Manager NOTICE File
+POSIX Shell Display Manager NOTICE File
 
 
 The POSIX Shell Display Manager is a minimal script written in POSIX-compliant shell that utilizes a set of programs

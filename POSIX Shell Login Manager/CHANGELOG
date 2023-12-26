@@ -89,5 +89,5 @@ Version: v3.0
 - Reduced usage of unnecessary commands and variables
 - Replaced ls command with find command
 - Reverted v2.4 switch to if-else replacements
-- Split xrun() into xrun() and xsetup, same for wrun/wsetup
+- Split xrun() into xrun() and xsetup(), same for wrun()/wsetup()
 - Updated README

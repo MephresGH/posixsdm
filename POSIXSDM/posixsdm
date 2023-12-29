@@ -1,0 +1,195 @@
+#!/bin/sh
+# posixsdm - Terminal-based display manager
+
+ttyexit() {
+# Return to TTY or the start of the script
+printf "\nEntered exit prompt\n"
+while true; do
+printf "Do you want to return to the TTY, exit or go to the login menu? (T/E/L) "
+read -r tel
+	case "$tel" in
+		[Tt]) printf "\nExiting to TTY shell...\n"
+		exec "$SHELL";;
+		[Ee]) printf "\nExiting to TTY login...\n"
+		exit 0;;
+		[Ll]) printf "\nReturning to posixsdm login...\n"
+		case "$tty_warn" in
+			"") concheck;;
+			*) warning
+		esac;;
+		*) printf "\nError: invalid input\n\n"
+	esac
+done
+}
+
+wrun() {
+# xrun() equivalent for Wayland
+if [ -f "$wses"/$wm.desktop ] || [ "$wcheck" -eq 1 ]; then
+	export XDG_SESSION_TYPE="wayland"
+	printf "\nRunning %s\n" "$runwm"
+	exec "$runwm"
+elif [ "$wcheck" -eq 0 ]; then
+	printf "\n\n%sCRITICAL ERROR%s\nNo Wayland-based environment has been found.\nPress any key to go back to the start menu" "${RED}" "${NORMAL}"
+	read -r az
+	sdmlogin
+else
+	printf "\nError: invalid input or .desktop file not found\n"
+	export XDG_SESSION_TYPE="tty"
+fi
+}
+
+xrun() {
+# Run Xorg-based desktops; If more than one .desktop file is found, continue
+# If sx is found, execute Xorg via sx. Otherwise, use startx
+# Read input to search for xsessions .desktop files
+# Finally: if nothing is found, warn user
+if [ -f "$xses"/$wm.desktop ] || [ "$xcheck" -eq 1 ]; then
+	export XDG_SESSION_TYPE="x11"
+	printf "\nRunning %s\n" "$runwm"
+	if [ -f /usr/bin/startx ]; then
+		exec dbus-launch --exit-with-session startx "$runwm"
+	elif [ -f /usr/bin/sx ]; then
+		exec dbus-launch --exit-with-session sx "$runwm"
+	elif [ -f "$minisx" ]; then
+		exec dbus-launch --exit-with-session "$minisx" "$runwm"
+	else
+		export XDG_SESSION_TYPE="tty"
+		printf "\n\n%sCRITICAL ERROR%s\nXorg cannot be run: startx and sx cannot be found\n" "${RED}" "${NORMAL}"
+	fi
+elif [ "$xcheck" -eq 0 ]; then
+	printf "\n\n%sCRITICAL ERROR%s\nNo Xorg-based environment has been found.\nPress any key to go back to the start menu" "${RED}" "${NORMAL}"
+	read -r az
+	sdmlogin
+else
+	printf "\nError: invalid input or .desktop file not found\n"
+fi
+}
+
+wsetup() {
+printf "\nEntered Wayland prompt\n"
+wcheck=$(find "$wses" -type f | wc -l)
+case "$wcheck" in
+	1) runwm=$(sed -n 's/^Exec=//p' "$wses"/*.desktop)
+	printf "\nOnly one environment found"
+	wrun;;
+	0) printf "%sCRITICAL ERROR%s" "${RED}" "${NORMAL}"
+	printf "No Wayland-based environment found\nPress any key to go back to the start menu "
+	read -r az
+	sdmlogin
+esac
+
+while true; do
+printf "\nWhat Wayland desktop do you want to run?\n\nOptions:\nView .desktop files, Exit, Run Desktop (V/X/INPUT) "
+read -r wm
+	case "$wm" in
+		[Vv]) find "$wses" -type f -printf "%f\n";;
+		[Xx]) ttyexit;;
+		"$wm") runwm=$(sed -n 's/^Exec=//p' "$wses"/$wm.desktop)
+		wrun
+	esac
+done
+}
+
+xsetup() {
+printf "\nEntered X.Org prompt\n"
+xcheck=$(find "$xses" -type f | wc -l)
+case "$xcheck" in
+	1) runwm=$(sed -n 's/^Exec=//p' "$xses"/*.desktop)
+	printf "\nOnly one environment found"
+	xrun;;
+	0) printf "%sCRITICAL ERROR%s\nNo Xorg-based environment found\n" "${RED}" "${NORMAL}"
+	printf "Press any key to go back to the start menu "
+	read -r az
+	sdmlogin
+esac
+
+while true; do
+printf "\nWhat X.Org desktop do you want to start?\n\n"
+printf "Options:\nView .desktop files, Exit, Run Desktop (V/X/INPUT) "
+read -r wm
+	case "$wm" in
+		[Vv]) find "$xses" -type f -printf "%f\n";;
+		[Xx]) ttyexit;;
+		"$wm") runwm=$(sed -n 's/^Exec=//p' "$xses"/$wm.desktop)
+		xrun
+	esac
+done
+}
+
+sdmlogin() {
+# Navigate through multiple functions in this script
+clear
+printf "POSIX Shell Display Manager\n\nCurrent login session:\n"
+who
+printf "\nRecent logins:\n\n"
+last | head -n 6
+printf "\nCurrently used shell: %s\n\nInstalled desktops:\n\n" "$SHELL"
+find "$xses" "$wses" -type f
+printf "\n%sNOTE: Only .desktop files that exist can be run.%s\n\n" "${YELLOW}" "${NORMAL}"
+
+while true; do
+printf "Do you want to run an X.Org or Wayland desktop? (X/W/N) "
+read -r xwn
+	case "$xwn" in
+		[Xx]) xsetup;;
+		[Ww]) wsetup;;
+		[Nn]) ttyexit;;
+		*) printf "\nError: invalid input\n\n"
+	esac
+done
+}
+
+warning() {
+# If a desktop is detected or TTY isn't running, warn user
+while true; do
+printf "%sWARNING: TTY1 was not detected or a desktop is running.%s\nDo you want to continue? (Y/N) " "${YELLOW}" "${NORMAL}"
+read -r yn
+	case "$yn" in
+		[Yy]) case "$wm" in
+			"") sdmlogin;;
+			*) "$runner"
+		esac;;
+		[Nn]) ttyexit;;
+		*) printf "\nError: invalid input\n\n"
+	esac
+done
+}
+
+concheck() {
+# See if ${DISPLAY} is empty and TTY1 is detected, then view $wm and run $runner
+# If the conditions are not met, enter warning prompt
+if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -eq 1 ]; then
+	case "$wm" in
+		"") sdmlogin;;
+		*) "$runner"
+	esac
+else
+	tty_warn=1
+	warning
+fi
+}
+
+# Set variables and parameters for switch statement to handle user input
+# Call concheck() and continue from there
+xses="/usr/share/xsessions"
+wses="/usr/share/wayland-sessions"
+minisx="$HOME/.config/posixsdm/sx"
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+NORMAL=$(tput sgr0)
+
+case "$1" in
+	-r|--run) concheck;;
+	-x|--xorg) wm="$2" runner=xrun runwm=$(sed -n 's/^Exec=//p' "$xses"/$wm.desktop)
+	concheck;;
+	-w|--wayland) wm="$2" runner=wrun runwm=$(sed -n 's/^Exec=//p' "$wses"/$wm.desktop)
+	concheck;;
+	-h|--help) printf "Terminal-based display manager written in POSIX Shell\n"
+	printf "Usage: posixsdm <option> [...]\n\nOptions:\n"
+	printf -- "-r, --run\t\tRun the script and do a variable check\n"
+	printf -- "-x, --xorg [INPUT] \tRun Xorg-based desktop directly (not recommended)\n"
+	printf -- "-w, --wayland [INPUT]\tRun wayland-based desktop directly (not recommended)\n"
+	printf -- "-h, --help\t\tDisplay this help message\n";;
+	"") printf "Error: whitespace detected\nUsage: posixsdm <option> [...]\nOptions: --help, --run, --wayland, --xorg\n";;
+	*) printf "Error: '%s' is not a valid option\nUsage: posixsdm <option> [...]\nOptions: --help, --run, --wayland, --xorg\n" "$1"
+esac

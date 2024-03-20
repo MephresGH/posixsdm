@@ -1,58 +1,74 @@
 #!/bin/sh
-### posixsdm setup script
-### Licensed under: GNU General Public License v3.0
+## posixsdm setup script
+## Licensed under: GNU General Public License v3.0
 
 uninstall() {
-printf "Removing POSIXSDM files and associations...\n"
-if [ -f /usr/bin/posixsdm ]; then
-	sudo rm /usr/bin/posixsdm
-	rm -r "$HOME"/.config/posixsdm 2>/dev/null
-	printf "The program has been removed.\n"
-else
-	printf "The program has not been found, continuing.\n"
-fi
-
-printf "Removing POSIXSDM from .profile...\n"
+printf "Removing POSIXSDM and associated files...\n"
+[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm
+[ -d "$HOME"/.config/posixsdm ] && rm -r "$HOME"/.config/posixsdm
 sed -i '/posixsdm/d' "$HOME"/.*profile
+printf "POSIXSDM has been removed.\n\n"
 
-while true; do
-printf "\nThe script has finished. Do you want to reboot the machine? (Y/N) "
-read -r yn
+while read -rp "The script has finished. Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
 	case "$yn" in
 		[Yy]) reboot;;
-		[Nn]) printf "\nExiting without rebooting. Please restart your system.\n"
+		[Nn]) printf "\nExiting without rebooting, please restart your system.\n"
 		exit;;
-		*) printf "\nIncorrect input detected, repeating prompt...\n"
+		*) printf "\nIncorrect input detected, repeating prompt\n"
 	esac
 done
 }
 
-installer() {
-chmod +x ./posixsdm
-sudo cp ./posixsdm /usr/bin/
-mkdir "$HOME"/.config/posixsdm
-echo "exec posixsdm -r" >> "$CONF"
-
-while true; do
-printf "\nDo you want to install a customized sx script (startx alternative)? (Y/N) "
-read -r yn
-	case "$yn" in
-		[Yy]) printf "\nInstalling.\n"
-		chmod +x ./sx
-		cp -f ./sx "$HOME"/.config/posixsdm
+install() {
+while read -rp "Do you want to install POSIXSDM locally or globally? ([U]ser|RETURN/[R]oot) " priv; do
+	case "$priv" in
+		user|u|"") printf "Installing locally\n"
+		dir='$HOME'/.config/posixsdm/
+		mkdir "$HOME"/.config/posixsdm/
+		chmod +x ./posixsdm
+		cp ./posixsdm "$HOME"/.config/posixsdm/
+		chmod +x "$HOME"/.config/posixsdm/
 		break;;
-		[Nn]) printf "\nAborting.\n"
+		root|r) printf "\nInstalling globally\n"
+		sudo cp ./posixsdm /usr/bin/
+		sudo chmod +x /bin/posixsdm
 		break;;
-		*) printf "\nError: invalid input\n"
+		*) printf "\nIncorrect input detected, repeating prompt\n"
 	esac
 done
 
-while true; do
-printf "The scripts have been installed. Do you want to reboot the machine? (Y/N) "
-read -r yn
+while read -rp "Do you want to specify what DE/WM posixsdm runs on startup? ([Y]es/[N]o) " yn; do
+	case "$yn" in
+		[Yy]) printf "\nCustom mode chosen\nThe following DEs/WMs are available:\n\nX11:\n"
+		find /usr/share/xsessions -type f -printf "%f\n"
+		printf "\nWayland:\n"
+		find /usr/share/wayland-sessions -type f -printf "%f\n"
+		while read -rp "Which desktop do you want to run? " wm; do
+		runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/$wm.desktop 2>/dev/null)
+			if [ -f /usr/share/wayland-sessions/$wm ]; then
+				printf "%s was found in wayland-sessions.\nParameters: -w %s (%s)\n" "$runwm" "$wm" "$runwm"
+				printf "exec %sposixsdm -w $wm" "$dir" >> "$CONF"
+				break 2
+			elif [ -f /usr/share/xsessions/$wm ]; then
+				printf "%s was found in xsessions.\nParameters: -x %s (%s)\n" "$runwm" "$wm" "$runwm"
+				printf "exec %sposixsdm -x $wm" "$dir" >> "$CONF"
+				break 2
+			else
+				printf "Error: desktop doesn't exist\n"
+			fi
+		done;;
+		[Nn]) printf "Running posixsdm in standard mode\n"
+		printf "exec %sposixsdm -r" "$dir" >> "$CONF"
+		break;;
+		*) printf "Error: '%s' is not a valid option, repeating prompt\n\n" "$yn"
+	esac
+done
+
+while read -rp "POSIXSDM has been installed. Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
 	case "$yn" in
 		[Yy]) reboot;;
-		[Nn]) printf "\nExiting without rebooting. Please uninstall your current login manager and reboot your machine to run POSIXSDM.\n"
+		[Nn]) printf "\nExiting without rebooting.
+Please uninstall your current display manager and reboot your machine to run POSIXSDM.\n"
 		exit;;
 		*) printf "\nError: invalid input\n"
 	esac
@@ -60,49 +76,56 @@ done
 }
 
 setup() {
-while true; do
-printf "Is your login shell ZSH, Bash or POSIX SH? (Z/S/N) "
-read -r zsn
-	case "$zsn" in
-		[Zz]) printf "\nInstalling ZSH profile.\n"
-		CONF="$HOME/.zprofile"
-		installer;;
-		[Ss]) printf "\nInstalling SH profile.\n"
-		CONF="$HOME/.profile"
-		installer;;
-		[Nn]) printf "Exiting.\n"
+while read -rp "Is your login shell ZSH, Bash or POSIX SH? ([Z]SH/[P]OSIXSH/E[x]it) " zpx; do
+	case "$zpx" in
+		[Zz]) CONF="$HOME/.zprofile"
+		break;;
+		[Pp]) CONF="$HOME/.profile"
+		break;;
+		[Xx]) printf "Exiting.\n"
 		exit;;
 		*) printf "\nIncorrect input detected, repeating prompt...\n"
 	esac
 done
+printf "\nInstalling via %s file.\n" "$CONF"
+install
 }
 
 prompt() {
-printf "This is the setup script for the POSIX Shell Display Manager.\n"
-printf "Please read the NOTICE.txt file for more information before installation.\n"
 while true; do
-printf "Do you want to install or uninstall POSIXSDM? (I/U/N) "
-read -r yn
-	case "$yn" in
+	printf "This is the setup script for the POSIX Shell Display Manager.
+Please read the NOTICE.txt file for more information before installation."
+	read -rp "Do you want to install or uninstall POSIXSDM? ([I]nstall/[U]ninstall/E[x]it) " iux
+	case "$iux" in
 		[Ii]) printf "\nStarting installation setup.\n"
 		setup;;
 		[Uu]) printf "\nStarting uninstall setup.\n"
 		uninstall;;
-		[Nn]) printf "Exiting.\n"
+		[Xx]) printf "Exiting.\n"
 		exit;;
 		*) printf "\nIncorrect input detected, repeating prompt\n"
 	esac
 done
 }
 
+name="setup"
 case "$1" in
 	-i|--install) setup;;
+	-is|--install-sh) printf "\nSelected BASH/POSIX Shell setup\n"
+	CONF="$HOME/.profile"
+	install;;
+	-iz|--install-zsh) printf "Selected ZSH setup\n"
+	CONF="$HOME/.zprofile"
+	install;;
 	-u|--uninstall) uninstall;;
-	-h|--help) printf "POSIXSDM setup script\n"
-	printf "Usage: setup <option> [...]\n\nOptions:\n"
-	printf -- "-i, --install\t\tRun the installer\n"
-	printf -- "-u, --uninstall\t\tRun the uninstaller\n"
-	printf -- "-h, --help\t\tDisplay this help message\n";;
-	"") prompt;;
-	*) printf "Error: '%s' is not a valid option\nType './setup --help' for help\n" "$1"
+	-h|--help) printf "POSIXSDM setup script
+Usage: '%s' <option> [...]\n\nOptions:\n" "$name"
+printf -- "-i, --install\t\tRun the installer
+-iz, --install-zsh\tDirectly install via ZSH
+-is, --install-sh\tDirectly install via BASH/POSIX Shell
+-u, --uninstall\t\tRun the uninstaller
+-h, --help\t\tDisplay this help message\n";;
+	"") printf "Type '%s --help' to list all options\n" "$name"
+	prompt;;
+	*) printf "Error: '%s' is not valid\nType './%s --help' for help\n" "$1" "$name"
 esac

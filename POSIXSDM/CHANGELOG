@@ -28,7 +28,7 @@ Version: v2.0
 - Re-inserted comments and removed the DOCUMENTATION.txt file
 - Introduced $wcheck and $xcheck for instant starting of desktops if only one .desktop file is found
 
-vVersion: v2.1
+Version: v2.1
 - Further reduced amount of if-else segments
 - Added failsafe in wrun() and xrun() in case the user has no desktop environment installed
 - Added failsafe in new install and uninstall script prompts
@@ -100,3 +100,33 @@ Version: v3.1
 - Rename GitHub folder
 - Replaced $srv variable with $runner variable for readability
 - Small simplification of more comments
+
+Version: v3.2
+- Added ability to specify which WM/DE the user can run on startup of posixsdm via setup script
+- Added an extra check in the concheck() function to run sdmlogin() when not on TTY1
+- Added a warning in posixsdm if user-specified DE/WM called via -x or -w parameter does not exist
+- Added extra options -is and -iz for quick installation via BASH/SH and ZSH
+- Added $param variable; primitive support to run DEs and WMs with parameters (only for debugging purposes, must be set manually)
+- Added $dexec to avoid closing the shell after running a desktop when $param contains any strings
+- Allow for startup parameters to either be lowercase or capitalized
+- Changed setup script to permit running without parameters; hint to --help to see all available parameters
+- Don't create posixsdm folder in .config if not installing minisx
+- Expanded prompt texts for clarity and readability
+- Overhauled and simplified README
+- POSIXSDM can now be installed locally (recommended approach from now on)
+- Re-arranged multiple lines in posixsdm and setup
+- Re-implemented read lines for modern POSIX-compliant shells to reduce printf usage in prompts
+- $wm now set at the start of script instead of inside the first switch statement
+- Removed custom sx script
+- Removed duplicate checking of $wcheck and $xcheck variables in wrun and xrun respectively
+- Removed option to run the setup script with no parameters
+- Removed unnecessary calling of printf in all scripts with read -rp, singular printf calls, etc
+- Removed unnecessary condition checks of variables $xcheck and $wcheck in posixsdm
+- Removed unnecessary curly braces around formatting and startup-related variables
+- Reverted dbus-run-session removal [v2.5]
+- Replaced sed regular expression matching with GNU grep for small speed improvements
+- Replaced manual naming of scripts in the "usage" info segments with the $name variable
+- Replaced $sdmlogin_run with $run_once variable in posixsdm
+- Simplified printing of information in some segments
+- Simplified detection of startx or sx via short-circuit logical operators to reduce duplicate code
+- Updated README.md

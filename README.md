@@ -12,23 +12,23 @@ Related parameters can be found in the USAGE section.
 ### USAGE
 The following parameters are available for POSIXSDM:
 
-POSIXSDM:
--r, --run: Run POSIXSDM as usual
--x, --xorg [INPUT]: Directly run an X-based graphical environment
--w, --wayland [INPUT]: Directly run a Wayland-based graphical environment
--h, --help: Display an example command and all parameters
+#### POSIXSDM:
+- -r, --run: Run POSIXSDM as usual
+- -x, --xorg [INPUT]: Directly run an X-based graphical environment
+- -w, --wayland [INPUT]: Directly run a Wayland-based graphical environment
+- -h, --help: Display an example command and all parameters
 
-Setup script:
--i, --install: Install POSIXSDM; select shell of choice
--is, --install-sh: Install POSIXSDM (For Dash/Bash users)
--iz, --install-zsh: Run the installer segment (For ZSH users)
--u, --uninstall: Uninstall POSIXSDM
--h, --help: Display an example command and all parameters
+#### Setup script:
+- -i, --install: Install POSIXSDM; select shell of choice
+- -is, --install-sh: Install POSIXSDM (For Dash/Bash users)
+- -iz, --install-zsh: Run the installer segment (For ZSH users)
+- -u, --uninstall: Uninstall POSIXSDM
+- -h, --help: Display an example command and all parameters
 
 ### DEPENDENCIES
 The following is required for POSIXSDM to work:
 
-General:
+#### General:
 - dbus-daemon
 - dbus-run-session
 - GNU coreutils
@@ -36,18 +36,18 @@ General:
 - sed
 - WM/DE of choice (plus their dependencies)
 
-X.Org-only:
+#### X.Org-only:
 - sx (optional)
 - xauth
 - xorg
 - xorg-xinit (recommended)
 
-Wayland-only:
+#### Wayland-only:
 - wayland
 - wayland-utils
 - wayland-protocols
 
-Shell compatibility
+#### Shell compatibility
 - ash
 - bash (default)
 - dash (recommended)

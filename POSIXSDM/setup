@@ -39,11 +39,9 @@ done
 
 while read -rp "Do you want to specify what DE/WM posixsdm runs on startup? ([Y]es/[N]o) " yn; do
 	case "$yn" in
-		[Yy]) printf "\nCustom mode chosen\nThe following DEs/WMs are available:\n\nX11:\n"
-		find /usr/share/xsessions -type f -printf "%f\n"
-		printf "\nWayland:\n"
-		find /usr/share/wayland-sessions -type f -printf "%f\n"
-		while read -rp "Which desktop do you want to run? " wm; do
+		[Yy]) printf "\nCustom mode chosen\nThe following DEs/WMs are available:\n\nX.Org:\n%s\n\n" "$(find /usr/share/xsessions -type f -printf "%f\n")"
+		printf "Wayland:\n%s\n\n" "$(find /usr/share/wayland-sessions -type f -printf "%f\n")"
+		while read -rp "Which desktop do you want to run?: " wm; do
 		runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/$wm.desktop 2>/dev/null)
 			if [ -f /usr/share/wayland-sessions/$wm ]; then
 				printf "%s was found in wayland-sessions.\nParameters: -w %s (%s)\n" "$runwm" "$wm" "$runwm"
@@ -54,7 +52,7 @@ while read -rp "Do you want to specify what DE/WM posixsdm runs on startup? ([Y]
 				printf "exec %sposixsdm -x $wm" "$dir" >> "$CONF"
 				break 2
 			else
-				printf "Error: desktop doesn't exist\n"
+				printf "Error: input is invalid or desktop doesn't exist\n"
 			fi
 		done;;
 		[Nn]) printf "Running posixsdm in standard mode\n"

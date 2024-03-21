@@ -54,16 +54,16 @@ fi
 }
 
 wsetup() {
-printf "\nEntered Wayland prompt\n"
 wcheck=$(find "$wses" -type f | wc -l)
 case "$wcheck" in
 	1) printf "\nOnly one environment found"
-	runwm=$(grep -oP '(?<=Exec= ).*' "$wses"/*.desktop)
+	runwm=$(grep -oP '(?<=Exec=).*' "$wses"/*.desktop)
 	wrun;;
 	0) printf "\n%sCRITICAL ERROR%s\nNo Wayland-based environment has been found." "$RED" "$NORMAL"
 	read -rp "Press return to go back to the start menu " az
 	sdmlogin
 esac
+printf "\nEntered Wayland prompt\n"
 
 while read -rp "What Wayland desktop do you want to run? ([V]iew/E[x]it/[INPUT]) " wm; do
 	case "$wm" in
@@ -76,7 +76,6 @@ done
 }
 
 xsetup() {
-printf "\nEntered X.Org prompt\n"
 xcheck=$(find "$xses" -type f | wc -l)
 case "$xcheck" in
 	1) printf "\nOnly one environment found\n"
@@ -87,6 +86,7 @@ case "$xcheck" in
 	sdmlogin
 esac
 
+printf "\nEntered X.Org prompt\n"
 while read -rp "What X.Org desktop do you want to start? ([V]iew/E[x]it/[INPUT]) " wm; do
 	case "$wm" in
 		[Vv]) find "$xses" -type f -printf "%f\n";;
@@ -100,12 +100,9 @@ done
 sdmlogin() {
 # Navigate through multiple functions in this script
 clear
-printf "POSIX Shell Display Manager\n\nCurrent login session:\n"
-who
-printf "\nRecent logins:\n\n"
-last | head -n 6
-printf "\nCurrently used shell: %s\n\nInstalled desktops:\n\n" "$SHELL"
-find "$xses" "$wses" -type f
+printf "POSIX Shell Display Manager\n\nCurrent login session:\n%s\n\n" "$(who)"
+printf "Recent logins:\n\n%s\n\n" "$(last | head -n 6)"
+printf "\nCurrently used shell: %s\n\nInstalled desktops:\n\n%s\n\n" "$SHELL" "$(find "$xses" "$wses" -type f)"
 printf "\n%sNOTE: Only .desktop files that exist can be run.%s\n\n" "$YELLOW" "$NORMAL"
 
 while read -rp "Do you want to run an X.Org or Wayland desktop? ([X]org/[W]ayland/[E]xit) " xwe; do
@@ -156,7 +153,7 @@ fi
 # Call concheck() and continue from there
 xses="/usr/share/xsessions" wses="/usr/share/wayland-sessions"
 YELLOW=$(tput setaf 3) RED=$(tput setaf 1) NORMAL=$(tput sgr0)
-wm="$2" param="$3" name="posixsdm"
+wm="$2" param="$3" title="posixsdm"
 [ -z "$param" ] && dexec="exec dbus-run-session"
 
 case "$1" in
@@ -167,10 +164,10 @@ case "$1" in
 Usage: %s <option> [...]\n\nOptions:\n-r, --run\t\tRun the script and do a variable check
 -x, --xorg [INPUT] \tRun Xorg-based desktop directly (not recommended)
 -w, --wayland [INPUT]\tRun wayland-based desktop directly (not recommended)
--h, --help\t\tDisplay this help message\n" "$name"; exit;;
+-h, --help\t\tDisplay this help message\n" "$title"; exit;;
 	"") printf "Error: whitespace detected\nUsage: %s <option> [...]
-Options: --help, --run, --wayland, --xorg\n" "$name"; exit;;
+Options: --help, --run, --wayland, --xorg\n" "$title"; exit;;
 	*) printf "Error: %s is not a valid option\nUsage: %s <option> [...]
-Options: --help, --run, --wayland, --xorg\n" "$1" "$name"; exit
+Options: --help, --run, --wayland, --xorg\n" "$1" "$title"; exit
 esac
 concheck

@@ -130,3 +130,10 @@ Version: v3.2
 - Simplified printing of information in some segments
 - Simplified detection of startx or sx via short-circuit logical operators to reduce duplicate code
 - Updated README.md
+
+Version: v3.21 (Hotfix)
+- Changed multiple commands to be used with printf via command substitution 
+- Changed X.Org and Wayland prompt printf lines to run after first sanity check
+- Fixed an error with grep in the wsetup() function where a space was included
+- Replaced $name variable in posixsdm to $title
+- Updated README to improve visibility on GitHub

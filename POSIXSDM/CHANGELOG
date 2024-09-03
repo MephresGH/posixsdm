@@ -137,3 +137,34 @@ Version: v3.21 (Hotfix)
 - Fixed an error with grep in the wsetup() function where a space was included
 - Replaced $name variable in posixsdm to $title
 - Updated README to improve visibility on GitHub
+
+Version: v3.3
+- Added $wm_full variable to redirect full DE/WM into local .profile
+- Added basic Makefile for quicker deployment and removal of POSIXSDM
+- Added short-circuit logical operators at start of setup and posixsdm to avoid duplicate code
+- Adjusted formatting of posixsdm and the setup script slightly for better readability
+- Call the runner() function with $runwm directly to reduce or simplify checks
+- Changed all non-environment variables to be spelled in snake_case
+- Changed while-true statements to contain colons (POSIX shell built-in) instead of "true" (potentially GNU coreutils)
+- Fixed a small formatting and printing error in a printf call
+- Fixed issues related to quoting of several variables
+- Improved general formatting
+- Changed switch statements to not use X as exit choice; use E instead (X is already used for Xorg options)
+- Merge wrun() and xrun() to a singular, renamed function
+- Merge wsetup() and xsetup() to a singular, renamed function
+- Only set $wcheck and $wcheck variables when they aren't non-zero
+- Pipe setup script's $runwm grep call into head with -n1 delimiter
+- Removed "entered exit prompt" printf line
+- Removed $title variable; manual naming saves space and is more efficient as of now
+- Removed ability to use globbing in posixsdm to start DEs/WMs (can be done more elegantly via setup)
+- Removed double checks in the setup script
+- Removed redundant "-n" parameters for head calls
+- Removed setup checks at start of script in favor of calling functions manually
+- Removed superficial mention of the GPL license in the setup script
+- Removed unnecessary comments
+- Removed unnecessary creations of variables when command substitutions are possible to make use of
+- Replaced $WM with $wm_input
+- Replaced $env variable with $desk_env to avoid confusion and potential environment conflicts
+- Replaced multiple function names with partially capitalized names for readability
+- Updated README to include a new "Additional notes" section and debugging parameters information
+- Use an underscore instead of az for read input prompt as dummy variable

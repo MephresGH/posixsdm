@@ -82,7 +82,7 @@ sdm_install() {
 		[Yy]) reboot ;;
 		[Nn])
 			printf "\nExiting without rebooting. \
-			Please uninstall your current display manager and reboot your machine to run POSIXSDM.\n"
+Please uninstall your current display manager and reboot your machine to run POSIXSDM.\n"
 			exit 0
 			;;
 		*)

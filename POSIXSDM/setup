@@ -59,8 +59,7 @@ sdm_install() {
 				wm_full=$(find /usr/share/*sessions/$wm_input.desktop -type f -exec basename {} .desktop \;)
 				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$wm_full".desktop | head -1)
 				if [ -f /usr/bin/"$runwm" ]; then
-					printf "%s was found.\nParameters: -w %s (%s)\n" "$runwm" "$wm_input" "$runwm"
-					printf "exec %s%sposixsdm -w %s" '"$HOME"' "$dir" "$wm_full" >>"$conf"
+					printf "exec %s%sposixsdm -w %s" "$HOME" "$dir" "$wm_full" >>"$conf"
 					break 2
 				else
 					printf "Error: input is invalid or desktop doesn't exist\n"
@@ -69,7 +68,7 @@ sdm_install() {
 			;;
 		[Nn])
 			printf "Running posixsdm in standard mode\n"
-			printf "exec %sposixsdm -r" "$dir" >>"$conf"
+			printf "exec %s%sposixsdm -r" "$HOME" "$dir" >>"$conf"
 			break
 			;;
 		*)

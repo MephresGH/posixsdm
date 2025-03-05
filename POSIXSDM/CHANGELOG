@@ -168,3 +168,6 @@ Version: v3.3
 - Replaced multiple function names with partially capitalized names for readability
 - Updated README to include a new "Additional notes" section and debugging parameters information
 - Use an underscore instead of az for read input prompt as dummy variable
+
+Version: v3.4
+- Misc. fixes (Lost CHANGELOG file, apologies!)

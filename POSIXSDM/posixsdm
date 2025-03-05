@@ -16,7 +16,10 @@ tty_exit() {
 			printf "\nReturning to posixsdm login...\n"
 			case "$run_once" in
 			1) warn_user ;;
-			"" | *) check_condition ;;
+			"" | *)
+				run_once="0" wm=""
+				check_condition
+				;;
 			esac
 			;;
 		*) printf "\nError: invalid input\n\n" ;;
@@ -44,9 +47,11 @@ run_desktop() {
 		"Wayland") export XDG_SESSION_TYPE="wayland" ;;
 		esac
 		printf "\nRunning %s\n" "$1"
+		export XDG_CURRENT_DESKTOP="$1"
 		$dexec $xstart "$1" $param
 	else
 		export XDG_SESSION_TYPE="tty"
+		export XDG_CURRENT_DESKTOP=""
 		printf "\nError: invalid input or .desktop file not found\n"
 	fi
 }
@@ -65,10 +70,10 @@ set_desktop() {
 		;;
 	*)
 		printf "\nEntered %s prompt\n" "$desk_env"
-		while read -rp "What ${desk_env} desktop do you want to run? ([V]iew/E[x]it/[INPUT]) " wm; do
+		while read -rp "What ${desk_env} desktop do you want to run? ([V]iew/[E]xit/[INPUT]) " wm; do
 			case "$wm" in
 			[Vv]) find "$ses" -type f -printf "%f\n" ;;
-			[Xx]) tty_exit ;;
+			[Ee]) tty_exit ;;
 			*) run_desktop "$(grep -oP "(?<=Exec=).*" "$ses"/"$wm".desktop)" $param ;;
 			esac
 		done
@@ -112,7 +117,11 @@ warn_user() {
 		case "$yn" in
 		[Yy]) case "$wm" in
 			"") sdm_greeter ;;
-			*) [ "$run_once" ] && sdm_greeter || run_desktop ;;
+			*) if [ "$run_once" -eq 1 ]; then
+				sdm_greeter
+			else
+				run_desktop
+			fi ;;
 			esac ;;
 		[Nn]) tty_exit ;;
 		*) printf "\nError: invalid input\n\n" ;;

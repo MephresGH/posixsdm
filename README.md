@@ -20,8 +20,6 @@ The following parameters are available for POSIXSDM:
 
 #### SETUP:
 - -i, --install: Install POSIXSDM; select shell of choice
-- -is, --install-sh: Install POSIXSDM (For Dash/Bash users)
-- -iz, --install-zsh: Run the installer segment (For ZSH users)
 - -u, --uninstall: Uninstall POSIXSDM
 - -h, --help: Display an example command and all parameters
 

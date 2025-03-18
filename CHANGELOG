@@ -171,3 +171,13 @@ Version: v3.3
 
 Version: v3.4
 - Misc. fixes (Lost CHANGELOG file, apologies!)
+
+Version: v3.5
+- setup: Add basic check if POSIXSDM is already installed
+- setup: Allow user to specify account to install POSIXSDM to
+- posixsdm: minor cleanup (formatting)
+- chore: Move changelog from src to root of POSIXSDM
+- chore: Rename "POSIXSDM" folder to "src"
+- posixsdm: Set every variable in a separate line
+- posixsdm: Fix minor printf mistake
+- setup: Fix redirection errors

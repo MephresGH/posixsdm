@@ -36,7 +36,7 @@ run_desktop() {
 	if [ -f "$ses"/"$wm".desktop ] && [ "$1" ]; then
 		case "$desk_env" in
 		"Xorg")
-			[ -f /usr/bin/startx ] && xstart="startx" || \
+			[ -f /usr/bin/startx ] && xstart="startx" ||
 				[ -f /usr/bin/sx ] && xstart="sx"
 			if [ "$xstart" ]; then
 				export XDG_SESSION_TYPE="x11"
@@ -159,12 +159,16 @@ help="Options: --run, --xorg, --wayland, --help"
 
 case "$1" in
 -[Rr] | --run) check=1 ;;
--[Xx] | --xorg) check=1 
-desk_env="Xorg"
-ses="/usr/share/xsessions" ;;
--[Ww] | --wayland) check=1
-desk_env="Wayland"
-ses="/usr/share/wayland-sessions" ;;
+-[Xx] | --xorg)
+	check=1
+	desk_env="Xorg"
+	ses="/usr/share/xsessions"
+	;;
+-[Ww] | --wayland)
+	check=1
+	desk_env="Wayland"
+	ses="/usr/share/wayland-sessions"
+	;;
 -[Hh] | --help) printf "TTY-based display manager written in modern POSIX-compliant Shell \
 	\nUsage: posixsdm <option> [...]\n\nOptions: \
 	\n-r, --run\t\tRun the script and do a variable check \

@@ -31,14 +31,24 @@ sdm_install() {
 			dir="/.config/posixsdm/"
 			mkdir "$user_directory"/.config/posixsdm/
 			chmod +x ./posixsdm
-			cp ./posixsdm "$user_directory"/.config/posixsdm/
-			chmod +x "$user_directory"/.config/posixsdm/
+
+			if cp ./posixsdm "$user_directory"/.config/posixsdm/; then
+				chmod +x "$user_directory"/.config/posixsdm/
+			else
+				printf "Error: POSIXSDM is already installed, exiting..."
+				exit 1
+			fi
+
 			break
 			;;
 		root | r)
 			printf "\nInstalling globally\n"
-			sudo cp ./posixsdm /usr/bin/
-			sudo chmod +x /bin/posixsdm
+			if sudo cp ./posixsdm /usr/bin/; then
+				sudo chmod +x /bin/posixsdm
+			else
+				printf "Error: POSIXSDM is already installed, exiting...\n"
+				exit 1
+			fi
 			break
 			;;
 		*)
@@ -57,8 +67,8 @@ sdm_install() {
 			printf "\nWayland:\n\n"
 			find /usr/share/wayland-sessions -type f -printf "%f\n"
 			while read -rp "Which desktop do you want to run?: " wm_input; do
-				wm_full=$(find /usr/share/*sessions/$wm_input.desktop -type f -exec basename {} .desktop \;)
-				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$wm_full".desktop | head -1)
+				wm_full=$(find /usr/share/*sessions/$wm_input.desktop -type f -exec basename {} .desktop \; 2>/dev/null)
+				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$wm_full".desktop 2>/dev/null | head -1)
 				if [ -f /usr/bin/"$runwm" ]; then
 					printf "exec %s%sposixsdm -w %s" "$user_directory" "$dir" "$wm_full" >>"$conf"
 					break 2

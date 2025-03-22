@@ -1,25 +1,25 @@
 ## RELEASES
 
-Version: v1.0
+### Version: v1.0
 - Initial release
 
-Version: v1.1
+### Version: v1.1
 - replace $userinput grep sed with sed only
 
-Version: v1.2
+### Version: v1.2
 - Move comments to DOCUMENTATION.txt
 - Remove if-elif-else code; re-implement as switch statements or short-circuit logical operators
 - Merge CHANGELOG information
 - Remove startx and sx dependencies
 - Implement adjusted sx shell script
 
-Version: v1.3
+### Version: v1.3
 - Remove unnecessary "sh" from install script
 - Rename NOTICE.txt to README.txt
 - Remove double-arrows in scripts
 - Replace home directory approach "~/" with "$HOME"
 
-Version: v2.0
+### Version: v2.0
 - Renaming of the project
 - Replaced more "if-else" condition checks with switch statements
 - Removed POSIXSDM folder
@@ -28,21 +28,21 @@ Version: v2.0
 - Re-inserted comments and removed the DOCUMENTATION.txt file
 - Introduced $wcheck and $xcheck for instant starting of desktops if only one .desktop file is found
 
-Version: v2.1
+### Version: v2.1
 - Further reduced amount of if-else segments
 - Added failsafe in wrun() and xrun() in case the user has no desktop environment installed
 - Added failsafe in new install and uninstall script prompts
 - Implemented more elegant condition checks in all scripts
 - Removed folder deletion segment in uninstall script
 
-Version: v2.2
+### Version: v2.2
 - Fixed the call of a non-existent function within POSIXSDM (introduced in v2.1; "posixslm" to "sdmlogin")
 - Changed the default directory for local user-dependant sxrc config files ($HOME/.config/sx/sxrc)
 - Replaced all if-else statements with switch segments
 - Expanded -x and -w parameters to include full names (--xorg, --wayland)
 - Updated README.md to adjust for the newest changes
 
-Version: v2.3
+### Version: v2.3
 - Changed default directory for sxrc and xauthority file
 - Changed back multiple switch condition checks to if-else for performance reasons
 - Replaced dbus-launch commands in posixsdm with dbus-run-session for stability reasons
@@ -51,17 +51,17 @@ Version: v2.3
 - Minor adjustments for readability
 - Replaced "w" with "who" for readability and cleaner output
 
-Version: v2.4
+### Version: v2.4
 - Changed the display-related switch statement to an if-else statement
 - printf fixes
 - Minor cleanup
 - Replaced all switch statements with if statements in sx script
 
-Version: v2.5
+### Version: v2.5
 - Reverted dbus-run-session $wm back to dbus-launch --exit-with-session $wm as no difference can be found
 - Unified both uninstall and install scripts to a singular setup script
 
-Version: v3.0
+### Version: v3.0
 - Added basic color formatting for critical errors and important information
 - Added condition check for either a WM/DE that was given by user, or if only one WM/DE exists in xrun() and wrun()
 - Added condition check for $XCHECK and $WCHECK variables for rare excpetions of the user not having installed any graphical environments
@@ -91,7 +91,7 @@ Version: v3.0
 - Split xrun() into xrun() and xsetup(), same for wrun() and wsetup()
 - Updated README
 
-Version: v3.1
+### Version: v3.1
 - Added $wm condition check in the concheck() function to run WM/DE requests called via the -x and -w parameters
 - Changed help and error output of posixsdm parameters
 - Removed unnecessary condition handling in concheck() function
@@ -101,7 +101,7 @@ Version: v3.1
 - Replaced $srv variable with $runner variable for readability
 - Small simplification of more comments
 
-Version: v3.2
+### Version: v3.2
 - Added ability to specify which WM/DE the user can run on startup of posixsdm via setup script
 - Added an extra check in the concheck() function to run sdmlogin() when not on TTY1
 - Added a warning in posixsdm if user-specified DE/WM called via -x or -w parameter does not exist
@@ -131,14 +131,14 @@ Version: v3.2
 - Simplified detection of startx or sx via short-circuit logical operators to reduce duplicate code
 - Updated README.md
 
-Version: v3.21 (Hotfix)
+### Version: v3.21 (Hotfix)
 - Changed multiple commands to be used with printf via command substitution 
 - Changed X.Org and Wayland prompt printf lines to run after first sanity check
 - Fixed an error with grep in the wsetup() function where a space was included
 - Replaced $name variable in posixsdm to $title
 - Updated README to improve visibility on GitHub
 
-Version: v3.3
+### Version: v3.3
 - Added $wm_full variable to redirect full DE/WM into local .profile
 - Added basic Makefile for quicker deployment and removal of POSIXSDM
 - Added short-circuit logical operators at start of setup and posixsdm to avoid duplicate code
@@ -169,5 +169,17 @@ Version: v3.3
 - Updated README to include a new "Additional notes" section and debugging parameters information
 - Use an underscore instead of az for read input prompt as dummy variable
 
-Version: v3.4
+### Version: v3.4
 - Misc. fixes (Lost CHANGELOG file, apologies!)
+
+### Version: v4.0
+- chore: Update README.md
+- chore: Rename CHANGELOG to CHANGELOG.md
+- setup: Add basic check if POSIXSDM is already installed
+- setup: Allow user to specify account to install POSIXSDM to
+- posixsdm: minor cleanup (formatting)
+- chore: Move changelog from src to root of POSIXSDM
+- chore: Rename "POSIXSDM" folder to "src"
+- posixsdm: Set every variable in a separate line
+- posixsdm: Fix minor printf mistake
+- setup: Fix redirection errors

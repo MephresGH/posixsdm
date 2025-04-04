@@ -5,7 +5,7 @@ sdm_uninstall() {
 	printf "Removing POSIXSDM and associated files...\n"
 	[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm
 	[ -d "$user_directory"/.config/posixsdm ] && rm -r "$user_directory"/.config/posixsdm
-	sed -i '/posixsdm/d' "$conf"
+	sed -i '/posixsdm/d' "$dot_profile"
 	printf "POSIXSDM has been removed.\n\n"
 
 	while read -rp "The script has finished. Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
@@ -23,12 +23,12 @@ sdm_uninstall() {
 }
 
 sdm_install() {
-	printf "\n%s detected for user %s, installing via %s file.\n" "$shell_profile" "$specify_user" "$conf"
-	while read -rp "Do you want to install POSIXSDM locally or globally? ([U]ser|RETURN/[R]oot) " priv; do
-		case "$priv" in
+	printf "\n%s detected for user %s, installing via %s file.\n" "$shell_profile" "$specify_user" "$dot_profile"
+	while read -rp "Do you want to install POSIXSDM locally or globally? ([U]ser|RETURN/[R]oot) " local_or_root; do
+		case "$local_or_root" in
 		user | u | "")
 			printf "Installing locally\n"
-			dir="/.config/posixsdm/"
+			config_directory="/.config/posixsdm/"
 			mkdir "$user_directory"/.config/posixsdm/
 			chmod +x ./posixsdm
 
@@ -66,11 +66,11 @@ sdm_install() {
 			find /usr/share/xsessions -type f -printf "%f\n"
 			printf "\nWayland:\n\n"
 			find /usr/share/wayland-sessions -type f -printf "%f\n"
-			while read -rp "Which desktop do you want to run?: " wm_input; do
-				wm_full=$(find /usr/share/*sessions/$wm_input.desktop -type f -exec basename {} .desktop \; 2>/dev/null)
-				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$wm_full".desktop 2>/dev/null | head -1)
+			while read -rp "Which desktop do you want to run?: " user_input; do
+				graphical_environment=$(find /usr/share/*sessions/$user_input.desktop -type f -exec basename {} .desktop \; 2>/dev/null)
+				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$graphical_environment".desktop 2>/dev/null | head -1)
 				if [ -f /usr/bin/"$runwm" ]; then
-					printf "exec %s%sposixsdm -w %s" "$user_directory" "$dir" "$wm_full" >>"$conf"
+					printf "exec %s%sposixsdm -w %s" "$user_directory" "$config_directory" "$graphical_environment" >>"$dot_profile"
 					break 2
 				else
 					printf "Error: input is invalid or desktop doesn't exist\n"
@@ -79,7 +79,7 @@ sdm_install() {
 			;;
 		[Nn])
 			printf "Running posixsdm in standard mode\n"
-			printf "exec %s%sposixsdm -r" "$user_directory" "$dir" >>"$conf"
+			printf "exec %s%sposixsdm -r" "$user_directory" "$config_directory" >>"$dot_profile"
 			break
 			;;
 		*)
@@ -124,15 +124,15 @@ sdm_check_user() {
 		if [ -z "$user_not_found" ]; then
 			case "$shell_profile" in
 			"/bin/sh" | "/usr/bin/sh")
-				conf="$user_directory"/.profile
+				dot_profile="$user_directory"/.profile
 				break
 				;;
 			"/bin/bash" | "/usr/bin/bash")
-				conf="$user_directory"/.bash_profile
+				dot_profile="$user_directory"/.bash_profile
 				break
 				;;
 			"/bin/zsh" | "/usr/bin/zsh")
-				conf="$user_directory"/.zprofile
+				dot_profile="$user_directory"/.zprofile
 				break
 				;;
 			*)
@@ -194,4 +194,4 @@ case "$1" in
 	;;
 esac
 
-[ -n "$conf" ] && sdm_install
+[ -n "$dot_profile" ] && sdm_install

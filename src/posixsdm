@@ -68,7 +68,7 @@ set_desktop() {
 		printf "\n%sCRITICAL ERROR%s \
 		\nNo %s-based environment has been found." "$red" "$normal" "$desktop_environment"
 		read -rp "Press return to go back to the start menu " _
-		sdm_greeter
+		greeter
 		;;
 	*)
 		printf "\nEntered %s prompt\n" "$desktop_environment"
@@ -83,7 +83,7 @@ set_desktop() {
 	esac
 }
 
-sdm_greeter() {
+greeter() {
 	clear
 	printf "POSIX Shell Display Manager \
 	\n\nRecent logins:\n\n%s\n\n" "$(last | head -8)"
@@ -120,9 +120,9 @@ warn_user() {
 		read -rp "Do you want to continue? (Y/N) " yn
 		case "$yn" in
 		[Yy]) case "$graphical_environment" in
-			"") sdm_greeter ;;
+			"") greeter ;;
 			*) if [ "$run_once" -eq 1 ]; then
-				sdm_greeter
+				greeter
 			else
 				run_desktop
 			fi ;;
@@ -138,7 +138,7 @@ check_condition() {
 	# If neither is true, warn the user
 	if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
 		case "$graphical_environment" in
-		"") sdm_greeter ;;
+		"") greeter ;;
 		*) run_desktop "$run_graphical_environment" ;;
 		esac
 	else

@@ -150,12 +150,12 @@ prompt() {
 		read -rp "Do you want to install or uninstall POSIXSDM? ([I]nstall/[U]ninstall/E[x]it) " iux
 		case "$iux" in
 		[Ii])
-			printf "\nStarting installation setup.\n"
+			printf "\nStarting install setup\n"
 			check_user
 			sdm_setup
 			;;
 		[Uu])
-			printf "\nStarting uninstall setup.\n"
+			printf "\nStarting uninstall setup\n"
 			check_user
 			uninstaller
 			;;
@@ -174,10 +174,12 @@ printf "POSIXSDM Setup Script\nPlease read the README file for more information 
 
 case "$1" in
 -i | --install)
+	printf "\nStarting install setup\n"
 	check_user
 	installer
 	;;
 -u | --uninstall)
+	printf "\nStarting uninstall setup\n"
 	check_user
 	uninstaller
 	;;

@@ -50,7 +50,7 @@ run_desktop() {
 		esac
 		printf "\nRunning %s\n" "$1"
 		export XDG_CURRENT_DESKTOP="$1"
-		$dexec $xstart "$1" $param
+		$dexec $xstart "$XDG_CURRENT_DESKTOP" $param
 	else
 		export XDG_SESSION_TYPE="tty"
 		export XDG_CURRENT_DESKTOP=""

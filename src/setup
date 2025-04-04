@@ -1,7 +1,7 @@
 #!/bin/sh
 ## posixsdm setup script
 
-sdm_uninstall() {
+uninstaller() {
 	printf "Removing POSIXSDM and associated files...\n"
 	[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm
 	[ -d "$user_directory"/.config/posixsdm ] && rm -r "$user_directory"/.config/posixsdm
@@ -22,7 +22,7 @@ sdm_uninstall() {
 	done
 }
 
-sdm_install() {
+installer() {
 	printf "\n%s detected for user %s, installing via %s file.\n" "$shell_profile" "$specify_user" "$dot_profile"
 	while read -rp "Do you want to install POSIXSDM locally or globally? ([U]ser|RETURN/[R]oot) " local_or_root; do
 		case "$local_or_root" in
@@ -103,7 +103,7 @@ Please uninstall your current display manager and reboot your machine to run POS
 	done
 }
 
-sdm_check_user() {
+check_user() {
 	while read -rp "What user do you want to run this script for? ([C]urrent|RETURN/[INPUT]) " specify_user; do
 		case "$specify_user" in
 		[Cc] | "")
@@ -145,19 +145,19 @@ sdm_check_user() {
 	done
 }
 
-sdm_prompt() {
+prompt() {
 	while :; do
 		read -rp "Do you want to install or uninstall POSIXSDM? ([I]nstall/[U]ninstall/E[x]it) " iux
 		case "$iux" in
 		[Ii])
 			printf "\nStarting installation setup.\n"
-			sdm_check_user
+			check_user
 			sdm_setup
 			;;
 		[Uu])
 			printf "\nStarting uninstall setup.\n"
-			sdm_check_user
-			sdm_uninstall
+			check_user
+			uninstaller
 			;;
 		[Xx])
 			printf "Exiting.\n"
@@ -174,12 +174,12 @@ printf "POSIXSDM Setup Script\nPlease read the README file for more information 
 
 case "$1" in
 -i | --install)
-	sdm_check_user
-	sdm_install
+	check_user
+	installer
 	;;
 -u | --uninstall)
-	sdm_check_user
-	sdm_uninstall
+	check_user
+	uninstaller
 	;;
 -h | --help) printf "POSIXSDM setup script \
 	\nUsage: setup <option> [...]\n\nOptions:\n-i, --install\t\tRun the installer \
@@ -187,11 +187,11 @@ case "$1" in
 	\n-h, --help\t\tDisplay this help message\n" ;;
 "")
 	printf "Type 'setup --help' to list all options\n"
-	sdm_prompt
+	prompt
 	;;
 *)
 	printf "Error: '%s' is not valid\nType './setup --help' for help\n" "$1"
 	;;
 esac
 
-[ -n "$dot_profile" ] && sdm_install
+[ -n "$dot_profile" ] && installer

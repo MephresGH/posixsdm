@@ -18,7 +18,7 @@ tty_exit() {
 			1) warn_user ;;
 			"" | *)
 				run_once="0"
-				wm=""
+				graphical_environment=""
 				check_condition
 				;;
 			esac
@@ -29,28 +29,28 @@ tty_exit() {
 }
 
 run_desktop() {
-	# If $desk_env is Wayland, then run Wayland. Otherwise, run Xorg
+	# If $desktop_environment is Wayland, then run Wayland. Otherwise, run Xorg
 	# If sx is found, execute Xorg via sx. Otherwise, use startx
 	# Read previous input to search for any sessions .desktop files
 	# Finally: if nothing is found, warn user
-	if [ -f "$ses"/"$wm".desktop ] && [ "$1" ]; then
-		case "$desk_env" in
+	if [ -f "$sessions"/"$graphical_environment".desktop ] && [ "$1" ]; then
+		case "$desktop_environment" in
 		"Xorg")
-			[ -f /usr/bin/startx ] && xstart="startx" ||
-				[ -f /usr/bin/sx ] && xstart="sx"
-			if [ "$xstart" ]; then
+			[ -f /usr/bin/startx ] && x_starter="startx" ||
+				[ -f /usr/bin/sx ] && x_starter="sx"
+			if [ "$x_starter" ]; then
 				export XDG_SESSION_TYPE="x11"
 			else
 				printf "\n\n%sCRITICAL ERROR%s \
 				\n%s and %s cannot be run:\nstartx and sx cannot be found \
-				\nPlease install startx or sx to fix this issue.\n" "$red" "$normal" "$desk_env" "$wm"
+				\nPlease install startx or sx to fix this issue.\n" "$red" "$normal" "$desktop_environment" "$graphical_environment"
 			fi
 			;;
 		"Wayland") export XDG_SESSION_TYPE="wayland" ;;
 		esac
 		printf "\nRunning %s\n" "$1"
 		export XDG_CURRENT_DESKTOP="$1"
-		$dexec $xstart "$XDG_CURRENT_DESKTOP" $param
+		$dbus_exec $x_starter "$XDG_CURRENT_DESKTOP" $parameter
 	else
 		export XDG_SESSION_TYPE="tty"
 		export XDG_CURRENT_DESKTOP=""
@@ -59,24 +59,24 @@ run_desktop() {
 }
 
 set_desktop() {
-	case "$(find "$ses" -type f | wc -l)" in
+	case "$(find "$sessions" -type f | wc -l)" in
 	1)
 		printf "\nOnly one desktop found"
-		run_desktop "$(grep -oP "(?<=Exec=).*" "$ses"/*.desktop)"
+		run_desktop "$(grep -oP "(?<=Exec=).*" "$sessions"/*.desktop)"
 		;;
 	0)
 		printf "\n%sCRITICAL ERROR%s \
-		\nNo %s-based environment has been found." "$red" "$normal" "$desk_env"
+		\nNo %s-based environment has been found." "$red" "$normal" "$desktop_environment"
 		read -rp "Press return to go back to the start menu " _
 		sdm_greeter
 		;;
 	*)
-		printf "\nEntered %s prompt\n" "$desk_env"
-		while read -rp "What ${desk_env} desktop do you want to run? ([V]iew/[E]xit/[INPUT]) " wm; do
-			case "$wm" in
-			[Vv]) find "$ses" -type f -printf "%f\n" ;;
+		printf "\nEntered %s prompt\n" "$desktop_environment"
+		while read -rp "What ${desktop_environment} desktop do you want to run? ([V]iew/[E]xit/[INPUT]) " graphical_environment; do
+			case "$graphical_environment" in
+			[Vv]) find "$sessions" -type f -printf "%f\n" ;;
 			[Ee]) tty_exit ;;
-			*) run_desktop "$(grep -oP "(?<=Exec=).*" "$ses"/"$wm".desktop)" $param ;;
+			*) run_desktop "$(grep -oP "(?<=Exec=).*" "$sessions"/"$graphical_environment".desktop)" $parameter ;;
 			esac
 		done
 		;;
@@ -95,13 +95,13 @@ sdm_greeter() {
 	while read -rp "Do you want to run an Xorg or Wayland desktop? ([X]org/[W]ayland/[E]xit) " xwe; do
 		case "$xwe" in
 		[Xx])
-			desk_env="Xorg"
-			ses="/usr/share/xsessions"
+			desktop_environment="Xorg"
+			sessions="/usr/share/xsessions"
 			set_desktop
 			;;
 		[Ww])
-			desk_env="Wayland"
-			ses="/usr/share/wayland-sessions"
+			desktop_environment="Wayland"
+			sessions="/usr/share/wayland-sessions"
 			set_desktop
 			;;
 		[Ee]) tty_exit ;;
@@ -111,7 +111,7 @@ sdm_greeter() {
 }
 
 warn_user() {
-	if [ "$desk_env" ] && [ ! -f "$ses"/"$wm" ]; then
+	if [ "$desktop_environment" ] && [ ! -f "$sessions"/"$graphical_environment" ]; then
 		empty_desk_denv="The specified desktop doesn't exist, and "
 	fi
 
@@ -119,7 +119,7 @@ warn_user() {
 		printf "%sWARNING: %sTTY1 was not detected or a desktop is running.%s\n" "$yellow" "$empty_desk_denv" "$normal"
 		read -rp "Do you want to continue? (Y/N) " yn
 		case "$yn" in
-		[Yy]) case "$wm" in
+		[Yy]) case "$graphical_environment" in
 			"") sdm_greeter ;;
 			*) if [ "$run_once" -eq 1 ]; then
 				sdm_greeter
@@ -134,12 +134,12 @@ warn_user() {
 }
 
 check_condition() {
-	# If $DISPLAY is empty and TTY1 is detected, then view $wm and run run_desktop()
+	# If $DISPLAY is empty and TTY1 is detected, then view $graphical_environment and run run_desktop()
 	# If neither is true, warn the user
 	if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
-		case "$wm" in
+		case "$graphical_environment" in
 		"") sdm_greeter ;;
-		*) run_desktop "$runwm" ;;
+		*) run_desktop "$run_graphical_environment" ;;
 		esac
 	else
 		run_once=1
@@ -152,22 +152,22 @@ check_condition() {
 yellow=$(tput setaf 3)
 red=$(tput setaf 1)
 normal=$(tput sgr0)
-wm="$2"
-param="$3"
+graphical_environment="$2"
+parameter="$3"
 help="Options: --run, --xorg, --wayland, --help"
-[ "$param" = "" ] && dexec="exec dbus-run-session"
+[ "$parameter" = "" ] && dbus_exec="exec dbus-run-session"
 
 case "$1" in
 -[Rr] | --run) check=1 ;;
 -[Xx] | --xorg)
 	check=1
-	desk_env="Xorg"
-	ses="/usr/share/xsessions"
+	desktop_environment="Xorg"
+	sessions="/usr/share/xsessions"
 	;;
 -[Ww] | --wayland)
 	check=1
-	desk_env="Wayland"
-	ses="/usr/share/wayland-sessions"
+	desktop_environment="Wayland"
+	sessions="/usr/share/wayland-sessions"
 	;;
 -[Hh] | --help) printf "TTY-based display manager written in modern POSIX-compliant Shell \
 	\nUsage: posixsdm <option> [...]\n\nOptions: \
@@ -179,5 +179,5 @@ case "$1" in
 *) printf "Error: %s is not a valid option\nUsage: posixsdm <option> [...]\n%s\n" "$1" "$help" ;;
 esac
 
-[ "$ses" ] && runwm=$(grep -oP '(?<=Exec=).*' "$ses"/"$wm".desktop)
-[ "$check" ] && check_condition "$runwm"
+[ "$sessions" ] && run_graphical_environment=$(grep -oP '(?<=Exec=).*' "$sessions"/"$graphical_environment".desktop)
+[ "$check" ] && check_condition "$run_graphical_environment"

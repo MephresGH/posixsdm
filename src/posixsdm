@@ -90,7 +90,7 @@ sdm_greeter() {
 	printf "Currently used shell: %s \
 	\n\nInstalled desktops:\n\n" "$SHELL"
 	find /usr/share/xsessions /usr/share/wayland-sessions -type f
-	printf "\n%sNOTE: Only .desktop files that exist can be run.%s\n\n" "$yellow" "$normal"
+	printf "\n%sNOTE: Ensure that the .desktop files don't contain errors or uninstalled environments.%s\n\n" "$yellow" "$normal"
 
 	while read -rp "Do you want to run an Xorg or Wayland desktop? ([X]org/[W]ayland/[E]xit) " xwe; do
 		case "$xwe" in

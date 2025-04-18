@@ -1,14 +1,8 @@
 #!/bin/sh
 ## posixsdm setup script
 
-uninstaller() {
-	printf "Removing POSIXSDM and associated files...\n"
-	[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm
-	[ -d "$user_directory"/.config/posixsdm ] && rm -r "$user_directory"/.config/posixsdm
-	sed -i '/posixsdm/d' "$dot_profile"
-	printf "POSIXSDM has been removed.\n\n"
-
-	while read -rp "The script has finished. Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
+reboot_prompt() {
+	while read -rp "Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
 		case "$yn" in
 		[Yy]) reboot ;;
 		[Nn])
@@ -20,6 +14,15 @@ uninstaller() {
 			;;
 		esac
 	done
+}
+
+uninstaller() {
+	printf "Removing POSIXSDM and associated files...\n"
+	[ -f /usr/bin/posixsdm ] && sudo rm /usr/bin/posixsdm
+	[ -d "$user_directory"/.config/posixsdm ] && rm -r "$user_directory"/.config/posixsdm
+	sed -i '/posixsdm/d' "$dot_profile"
+	printf "POSIXSDM has been removed.\n\n"
+	reboot_prompt
 }
 
 installer() {
@@ -88,19 +91,8 @@ installer() {
 		esac
 	done
 
-	while read -rp "POSIXSDM has been installed. Do you want to reboot the machine? ([Y]es/[N]o) " yn; do
-		case "$yn" in
-		[Yy]) reboot ;;
-		[Nn])
-			printf "\nExiting without rebooting. \
-Please uninstall your current display manager and reboot your machine to run POSIXSDM.\n"
-			exit 0
-			;;
-		*)
-			printf "\nError: invalid input\n"
-			;;
-		esac
-	done
+	printf "POSIXSDM has been installed.\n\n"
+	reboot_prompt
 }
 
 check_user() {

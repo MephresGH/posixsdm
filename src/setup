@@ -71,8 +71,8 @@ installer() {
 			find /usr/share/wayland-sessions -type f -printf "%f\n"
 			while read -rp "Which desktop do you want to run?: " user_input; do
 				graphical_environment=$(find /usr/share/*sessions/$user_input.desktop -type f -exec basename {} .desktop \; 2>/dev/null)
-				runwm=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$graphical_environment".desktop 2>/dev/null | head -1)
-				if [ -f /usr/bin/"$runwm" ]; then
+				run_environment=$(grep -oP '(?<=Exec=).*' /usr/share/*sessions/"$graphical_environment".desktop 2>/dev/null | head -1)
+				if [ -f /usr/bin/"$run_environment" ]; then
 					printf "exec %s%sposixsdm -w %s" "$user_directory" "$config_directory" "$graphical_environment" >>"$dot_profile"
 					break 2
 				else

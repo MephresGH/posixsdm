@@ -48,7 +48,7 @@ run_desktop() {
 			;;
 		"Wayland") export XDG_SESSION_TYPE="wayland" ;;
 		esac
-		printf "\nRunning %s\n" "$1"
+		printf "\nRunning %s%s%s\n" "$red" "$1" "$normal"
 		export XDG_CURRENT_DESKTOP="$1"
 		$dbus_exec $x_starter "$XDG_CURRENT_DESKTOP" $parameter
 	else

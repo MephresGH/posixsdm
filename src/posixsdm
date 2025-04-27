@@ -1,5 +1,6 @@
 #!/bin/sh
-## posixsdm - TTY-based display manager
+## posixsdm - POSIX-based Simple Display Manager Script
+## Licensed under GPL-3.0
 
 tty_exit() {
 	while read -rp "Do you want to return to the TTY, exit or go to the login menu? ([T]TY/[E]xit/[L]ogin) " tel; do

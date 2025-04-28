@@ -1,5 +1,6 @@
 #!/bin/sh
 ## posixsdm setup script
+## Licensed under GPL-3.0
 
 reboot_prompt() {
 	while read -rp "Do you want to reboot the machine? ([Y]es/[N]o) " yn; do

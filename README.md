@@ -41,6 +41,7 @@ The following is required for POSIXSDM to work:
 - xorg-xinit (recommended)
 
 #### Wayland-only:
+- uwsm
 - wayland
 - wayland-utils
 - wayland-protocols

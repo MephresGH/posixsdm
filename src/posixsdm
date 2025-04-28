@@ -24,7 +24,7 @@ tty_exit() {
 				;;
 			esac
 			;;
-		*) printf "\nError: invalid input\n\n" ;;
+		*) printf "Error: invalid input\n\n" ;;
 		esac
 	done
 }
@@ -35,27 +35,35 @@ run_desktop() {
 	# Read previous input to search for any sessions .desktop files
 	# Finally: if nothing is found, warn user
 	if [ -f "$sessions"/"$graphical_environment".desktop ] && [ "$1" ]; then
+		printf "Running %s%s%s\n" "$red" "$graphical_environment" "$normal"
+		export XDG_CURRENT_DESKTOP="$1"
 		case "$desktop_environment" in
 		"Xorg")
 			[ -f /usr/bin/startx ] && x_starter="startx" ||
 				[ -f /usr/bin/sx ] && x_starter="sx"
 			if [ "$x_starter" ]; then
 				export XDG_SESSION_TYPE="x11"
+				"$dbus_exec" "$x_starter" "$XDG_CURRENT_DESKTOP" $parameter
 			else
 				printf "\n\n%sCRITICAL ERROR%s \
 				\n%s and %s cannot be run:\nstartx and sx cannot be found \
 				\nPlease install startx or sx to fix this issue.\n" "$red" "$normal" "$desktop_environment" "$graphical_environment"
 			fi
 			;;
-		"Wayland") export XDG_SESSION_TYPE="wayland" ;;
+		"Wayland")
+			if grep -q "uwsm" "$sessions"/"$graphical_environment".desktop; then
+				printf "%sERROR:%s The .desktop file you chose uses uwsm.
+Please use a non-uwsm managed .desktop file, as POSIXSDM's Wayland manager already uses uwsm by default.\n\n" "$red" "$normal"
+			else
+				export XDG_SESSION_TYPE="wayland"
+				exec uwsm start -- "$XDG_CURRENT_DESKTOP" $parameter
+			fi
+			;;
 		esac
-		printf "\nRunning %s%s%s\n" "$red" "$1" "$normal"
-		export XDG_CURRENT_DESKTOP="$1"
-		$dbus_exec $x_starter "$XDG_CURRENT_DESKTOP" $parameter
 	else
 		export XDG_SESSION_TYPE="tty"
 		export XDG_CURRENT_DESKTOP=""
-		printf "\nError: invalid input or .desktop file not found\n"
+		printf "%sERROR:%s invalid input or .desktop file not found\n" "$red" "$normal"
 	fi
 }
 
@@ -106,7 +114,7 @@ greeter() {
 			set_desktop
 			;;
 		[Ee]) tty_exit ;;
-		*) printf "\nError: invalid input\n\n" ;;
+		*) printf "Error: invalid input\n\n" ;;
 		esac
 	done
 }
@@ -129,7 +137,7 @@ warn_user() {
 			fi ;;
 			esac ;;
 		[Nn]) tty_exit ;;
-		*) printf "\nError: invalid input\n\n" ;;
+		*) printf "Error: invalid input\n\n" ;;
 		esac
 	done
 }

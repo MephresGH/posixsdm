@@ -55,7 +55,6 @@ run_desktop() {
 				printf "%sERROR:%s The .desktop file you chose uses uwsm.
 Please use a non-uwsm managed .desktop file, as POSIXSDM's Wayland manager already uses uwsm by default.\n\n" "$red" "$normal"
 			else
-				export XDG_SESSION_TYPE="wayland"
 				exec uwsm start -- "$XDG_CURRENT_DESKTOP" $parameter
 			fi
 			;;

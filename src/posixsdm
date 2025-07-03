@@ -80,7 +80,7 @@ set_desktop() {
 		;;
 	*)
 		printf "\nEntered %s prompt\n" "$desktop_environment"
-		while read -rp "What ${desktop_environment} desktop do you want to run? ([V]iew/[E]xit/[INPUT]) " graphical_environment; do
+		while read -rp "What ${desktop_environment} desktop do you want to run? ([V]iew/[E]xit/[INPUT]) " graphical_environment parameter; do
 			case "$graphical_environment" in
 			[Vv]) find "$sessions" -type f -printf "%f\n" ;;
 			[Ee]) tty_exit ;;
